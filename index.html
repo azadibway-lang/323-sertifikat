@@ -1,1115 +1,458 @@
 <!DOCTYPE html>
-<html lang="uz" class="locked">
+<html lang="uz">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>323-son buyruq — interaktiv qo'llanma</title>
+<title>323 Ekspress — Hujjatlar nazorati | Manba</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700;9..144,900&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#0f2a52;
-    --blue:#1e56a8;
-    --blue-dark:#123a78;
-    --blue-tint:#eaf2fc;
-    --blue-tint2:#d7e7fa;
-    --gold:#c9861a;
-    --gold-dark:#8a5c0e;
-    --gold-tint:#fdf1da;
-    --gold-tint2:#fbe4b8;
-    --cream:#fbf9f3;
-    --paper:#ffffff;
-    --ink:#1c2536;
-    --ink-soft:#57627a;
-    --ink-faint:#8892a3;
-    --line:#e5e1d3;
-    --line-blue:#c9dcf3;
-    --ok:#1e7d4a;
-    --ok-bg:#e5f5ea;
-    --bad:#b3341f;
-    --bad-bg:#fdeae6;
-    --radius:14px;
-    --shadow:0 2px 0 rgba(15,42,82,0.05);
+    --bg:#F4F1E8; --surface:#FFFFFF; --ink:#1E2430; --ink-soft:#5B6472;
+    --primary:#0F6B5C; --primary-dark:#0B4E43; --primary-tint:#DFF0EC;
+    --gold:#D9A441; --gold-dark:#B9832F; --gold-tint:#FBF3E1;
+    --rose:#B23A48; --rose-tint:#F7E6E5;
+    --border:#E1DBC9; --shadow:0 4px 18px rgba(30,36,48,.08); --shadow-lift:0 14px 34px rgba(30,36,48,.16);
   }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
-  body{
-    background:var(--cream);
-    color:var(--ink);
-    font-family:'Manrope',system-ui,sans-serif;
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-  }
-  h1,h2,h3,h4{font-family:'Baloo 2',system-ui,sans-serif;color:var(--navy);margin:0;line-height:1.25;}
-  p{margin:0 0 .7em;}
-  ::selection{background:var(--gold-tint2);}
-  a{color:var(--blue);}
+  *{box-sizing:border-box;} html,body{margin:0;padding:0;}
+  body{font-family:'Manrope',sans-serif; background:var(--bg); color:var(--ink); min-height:100vh; -webkit-font-smoothing:antialiased;}
+  h1,h2,h3{font-family:'Fraunces',serif; font-weight:700; letter-spacing:-0.01em; margin:0;}
+  a{color:inherit;} button{font-family:inherit; cursor:pointer;}
+  ::selection{background:var(--gold); color:#fff;}
+  .ornament{height:10px; width:100%; background-image:repeating-linear-gradient(135deg,var(--primary) 0 6px,transparent 6px 12px); opacity:.5;}
+  #app{min-height:100vh; display:flex; flex-direction:column;}
 
-  .app{max-width:1180px;margin:0 auto;padding:0 20px 80px;}
+  /* LOGIN */
+  .login-wrap{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+    background:radial-gradient(circle at 12% 15%,rgba(15,107,92,.10),transparent 42%),radial-gradient(circle at 88% 85%,rgba(217,164,65,.16),transparent 42%),var(--bg);}
+  .login-card{width:100%; max-width:410px; background:var(--surface); border-radius:22px; box-shadow:var(--shadow-lift); overflow:hidden; border:1px solid var(--border);}
+  .login-body{padding:42px 34px 34px;}
+  .login-mark{display:flex; align-items:center; gap:11px; margin-bottom:26px;}
+  .login-mark .dot{width:40px;height:40px;border-radius:11px; background:linear-gradient(150deg,var(--primary),var(--primary-dark)); display:flex;align-items:center;justify-content:center; color:#fff; font-size:19px;}
+  .login-mark .word{font-size:20px; font-family:'Fraunces',serif; font-weight:700;}
+  .login-mark .sub{font-size:10.5px; color:var(--gold-dark); letter-spacing:.06em; font-weight:700;}
+  .login-body h1{font-size:25px; margin-bottom:8px;}
+  .login-body p.lead{color:var(--ink-soft); font-size:14.5px; margin:0 0 26px; line-height:1.55;}
+  .field label{display:block; font-size:12px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px;}
+  .field input{width:100%; padding:14px 16px; border-radius:11px; border:1.5px solid var(--border); background:var(--bg); font-size:16px; outline:none;}
+  .field input:focus{border-color:var(--primary); box-shadow:0 0 0 3px var(--primary-tint);}
+  .login-error{margin-top:12px; font-size:13.5px; color:var(--rose); font-weight:600; display:none;}
+  .login-error.show{display:block;}
+  .btn{border:none; border-radius:11px; padding:14px 20px; font-size:15px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; gap:8px;}
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--primary); color:#fff; width:100%; margin-top:20px;}
+  .btn-primary:hover{background:var(--primary-dark);}
+  .login-hint{margin-top:22px; padding-top:18px; border-top:1px dashed var(--border); font-size:12.5px; color:var(--ink-soft); line-height:1.6;}
 
-  /* ---------- HERO ---------- */
-  .hero{
-    padding:44px 0 30px;
-    display:grid;
-    grid-template-columns:1.3fr 1fr;
-    gap:32px;
-    align-items:center;
-    border-bottom:1px solid var(--line);
-    margin-bottom:26px;
-  }
-  .eyebrow{
-    display:inline-flex;align-items:center;gap:8px;
-    font-size:12.5px;font-weight:700;letter-spacing:.04em;
-    color:var(--gold-dark);background:var(--gold-tint);
-    border:1px solid var(--gold-tint2);
-    padding:5px 12px;border-radius:999px;margin-bottom:14px;
-  }
-  .hero h1{font-size:34px;font-weight:700;margin-bottom:10px;}
-  .hero h1 span{color:var(--blue);}
-  .hero p.lead{font-size:16px;color:var(--ink-soft);max-width:52ch;}
-  .hero-meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px;}
-  .meta-pill{
-    font-size:12.5px;font-weight:600;color:var(--blue-dark);
-    background:var(--blue-tint);border:1px solid var(--line-blue);
-    padding:6px 12px;border-radius:999px;
-  }
-  .hero-card{
-    background:var(--navy);border-radius:20px;padding:26px 26px 22px;
-    color:#fff; position:relative; overflow:hidden;
-  }
-  .hero-card::after{
-    content:"";position:absolute;right:-40px;top:-40px;width:150px;height:150px;
-    border-radius:50%;background:var(--blue-dark);opacity:.55;
-  }
-  .hero-card .stat-row{display:flex;gap:22px;position:relative;z-index:1;flex-wrap:wrap;}
-  .hero-stat b{display:block;font-family:'Baloo 2';font-size:26px;color:var(--gold-tint2);}
-  .hero-stat span{font-size:12px;color:#c7d6ef;}
-  .hero-card p{position:relative;z-index:1;font-size:13.5px;color:#d7e2f5;margin-top:16px;margin-bottom:0;}
+  /* HEADER */
+  header.site{background:var(--surface); border-bottom:1px solid var(--border); position:sticky; top:0; z-index:20;}
+  .site-header-inner{max-width:900px; margin:0 auto; padding:14px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand .dot{width:34px;height:34px;border-radius:9px; background:linear-gradient(150deg,var(--primary),var(--primary-dark)); display:flex;align-items:center;justify-content:center; color:#fff; font-size:16px;}
+  .brand .word{font-family:'Fraunces',serif; font-weight:700; font-size:16.5px; line-height:1.1;}
+  .brand .word small{display:block; font-size:9.5px; font-weight:700; color:var(--gold-dark); letter-spacing:.05em; text-transform:uppercase;}
+  .header-right{display:flex; align-items:center; gap:14px;}
+  .who-pill{font-size:12.5px; font-weight:700; color:var(--primary-dark); background:var(--primary-tint); padding:7px 12px; border-radius:20px;}
+  .icon-btn{background:transparent; border:1.5px solid var(--border); border-radius:9px; width:38px; height:38px; display:flex; align-items:center; justify-content:center; color:var(--ink-soft);}
+  .icon-btn:hover{border-color:var(--primary); color:var(--primary);}
+  main.site-main{max-width:900px; margin:0 auto; padding:32px 24px 100px; width:100%;}
 
-  /* ---------- PROGRESS BAR ---------- */
-  .progress-wrap{
-    display:flex;align-items:center;gap:14px;
-    background:var(--paper);border:1px solid var(--line);border-radius:999px;
-    padding:8px 8px 8px 18px;margin-bottom:26px;
-  }
-  .progress-wrap .lbl{font-size:12.5px;font-weight:700;color:var(--navy);white-space:nowrap;}
-  .progress-track{flex:1;height:8px;background:var(--blue-tint);border-radius:999px;overflow:hidden;}
-  .progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold));width:0%;transition:width .4s ease;}
-  .progress-pct{font-size:12.5px;font-weight:700;color:var(--gold-dark);min-width:38px;text-align:right;}
-  .progress-reset{
-    font-size:11.5px;font-weight:600;color:var(--ink-faint);background:none;border:1px solid var(--line);
-    border-radius:999px;padding:5px 11px;cursor:pointer;white-space:nowrap;
-  }
-  .progress-reset:hover{border-color:var(--blue);color:var(--blue);}
+  /* HERO */
+  .hero{background:linear-gradient(135deg,var(--primary-dark) 0%,var(--primary) 65%,#137F6C 100%); border-radius:22px; padding:34px 30px; color:#fff; margin-bottom:24px; position:relative; overflow:hidden;}
+  .hero::after{content:""; position:absolute; right:-50px; top:-50px; width:210px; height:210px; border-radius:50%; background:rgba(217,164,65,.16);}
+  .hero .kicker{font-size:11.5px; font-weight:700; letter-spacing:.09em; text-transform:uppercase; color:var(--gold); position:relative;}
+  .hero h1{font-size:25px; color:#fff; margin-top:9px; position:relative; line-height:1.3;}
+  .hero p{font-size:14px; color:rgba(255,255,255,.88); max-width:580px; margin-top:10px; line-height:1.6; position:relative;}
+  .hero-progress{display:flex; align-items:center; gap:14px; margin-top:20px; position:relative;}
+  .bar{flex:1; height:8px; background:rgba(255,255,255,.2); border-radius:6px; overflow:hidden;}
+  .bar-fill{height:100%; background:var(--gold); border-radius:6px; transition:width .4s ease;}
+  .hero-progress .pct{font-size:12.5px; font-weight:700; white-space:nowrap;}
 
-  /* ---------- LAYOUT ---------- */
-  .layout{display:grid;grid-template-columns:250px 1fr;gap:28px;align-items:start;}
-  .tabs{
-    position:sticky;top:16px;display:flex;flex-direction:column;gap:8px;
-    max-height:calc(100vh - 32px);overflow-y:auto;padding:2px 6px 2px 2px;
-  }
-  .tab-group-label{
-    display:flex;align-items:center;gap:8px;
-    font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-faint);
-    margin:20px 2px 2px;
-  }
-  .tab-group-label::after{content:"";flex:1;height:1px;background:var(--line);}
-  .tab-group-label:first-child{margin-top:2px;}
-  .tab{
-    display:flex;align-items:center;gap:12px;
-    padding:12px 14px;border-radius:16px;border:1px solid var(--line);
-    cursor:pointer;color:var(--ink-soft);background:var(--paper);
-    text-align:left;width:100%;font-family:inherit;
-    box-shadow:0 1px 0 rgba(15,42,82,0.03);
-  }
-  .tab:hover{border-color:var(--line-blue);transform:translateY(-1px);}
-  .tab.active{background:var(--navy);border-color:var(--navy);color:#fff;}
-  .tab-icon{
-    flex:none;width:38px;height:38px;border-radius:12px;background:var(--blue-tint);color:var(--blue-dark);
-    display:flex;align-items:center;justify-content:center;
-  }
-  .tab-icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;}
-  .tab.active .tab-icon{background:var(--blue);color:#fff;}
-  .tab.done .tab-icon{background:var(--gold-tint);color:var(--gold-dark);}
-  .tab.active.done .tab-icon{background:var(--gold);color:#fff;}
-  .tab-content{flex:1;min-width:0;}
-  .tab-top{display:flex;align-items:center;gap:7px;}
-  .tab .idx{
-    flex:none;font-size:10px;font-weight:800;font-family:'Baloo 2';letter-spacing:.02em;
-    color:var(--blue-dark);background:var(--blue-tint);border-radius:6px;padding:1px 6px;
-  }
-  .tab.active .idx{background:rgba(255,255,255,0.18);color:#fff;}
-  .tab .name{font-size:14px;font-weight:700;color:var(--navy);}
-  .tab.active .name{color:#fff;}
-  .tab .role-caption{display:block;font-size:11.5px;color:var(--ink-faint);margin-top:2px;}
-  .tab.active .role-caption{color:#c7d6ef;}
-  .tab .check{flex:none;color:var(--ok);font-size:15px;opacity:0;}
-  .tab.done .check{opacity:1;}
-  .tab.active .check{color:var(--gold-tint2);}
-  .tab.final{border-style:dashed;}
-  .tab.final .tab-icon{background:var(--gold-tint);color:var(--gold-dark);}
-  .tab.final.active .tab-icon{background:var(--gold);color:#fff;}
+  .formula-card{background:var(--surface); border:1.5px solid var(--gold); border-radius:16px; padding:18px 20px; margin-bottom:26px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  .formula-card .label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--gold-dark);}
+  .formula-card .nums{font-family:'Fraunces',serif; font-weight:700; font-size:20px; color:var(--primary-dark); letter-spacing:.02em;}
+  .formula-card .note{font-size:12.5px; color:var(--ink-soft); margin-left:auto;}
 
-  /* ---------- SECTION CARD ---------- */
-  .panel{display:none;animation:fade .25s ease;}
-  .panel.active{display:block;}
-  @keyframes fade{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+  .intro-note{background:var(--surface); border:1px solid var(--border); border-radius:15px; padding:18px 20px; margin-bottom:26px; font-size:13.5px; color:var(--ink-soft); line-height:1.65;}
+  .intro-note b{color:var(--ink);}
 
-  .section-head{
-    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
-    padding:22px 24px;margin-bottom:18px;
-  }
-  .section-head .tagrow{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
-  .badge-num{
-    font-family:'Baloo 2';font-weight:800;font-size:13px;color:#fff;
-    background:var(--blue);border-radius:8px;padding:3px 9px;
-  }
-  .badge-role{font-size:11.5px;font-weight:700;color:var(--gold-dark);background:var(--gold-tint);border:1px solid var(--gold-tint2);border-radius:999px;padding:3px 10px;}
-  .section-head h2{font-size:23px;margin-bottom:6px;}
-  .section-head .desc{color:var(--ink-soft);font-size:14.5px;max-width:70ch;}
+  .section-title{display:flex; align-items:baseline; justify-content:space-between; margin:0 0 16px;}
+  .section-title h2{font-size:18.5px;}
+  .section-title .count{font-size:12.5px; color:var(--ink-soft); font-weight:600;}
 
-  .card{
-    background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);
-    padding:20px 22px;margin-bottom:16px;
-  }
-  .card h3{font-size:16px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
-  .card h3 .dot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex:none;}
+  /* VAGON CARDS */
+  .vagon-list{display:flex; flex-direction:column; gap:11px; margin-bottom:20px;}
+  .vagon-card{background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:17px 19px; cursor:pointer;
+    box-shadow:var(--shadow); transition:transform .15s,box-shadow .15s; display:flex; align-items:center; gap:15px;}
+  .vagon-card:hover{transform:translateY(-2px); box-shadow:var(--shadow-lift);}
+  .vagon-card.intro{background:var(--gold-tint); border-color:var(--gold); cursor:default;}
+  .vagon-card .num{width:44px; height:44px; border-radius:12px; flex-shrink:0; background:var(--primary-tint); color:var(--primary-dark); display:flex; align-items:center; justify-content:center; font-size:21px;}
+  .vagon-card.done .num{background:var(--primary); color:#fff;}
+  .vagon-card .body{flex:1; min-width:0;}
+  .vagon-card .kicker{font-size:10.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--gold-dark);}
+  .vagon-card h3{font-size:15.5px; line-height:1.3; margin-top:3px;}
+  .vagon-card .desc{font-size:12.5px; color:var(--ink-soft); line-height:1.5; margin-top:4px;}
+  .vagon-card .progress-mini{font-size:11.5px; font-weight:700; color:var(--primary-dark); margin-top:6px;}
+  .vagon-card .arrow{color:var(--ink-soft); font-size:18px; flex-shrink:0;}
 
-  .doclist{display:flex;flex-direction:column;gap:10px;}
-  .doc{
-    display:grid;grid-template-columns:1fr auto;gap:6px 14px;align-items:start;
-    padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--cream);
-  }
-  .doc .idxname{font-weight:700;font-size:13.5px;color:var(--navy);}
-  .doc .idxname .code{color:var(--blue);font-family:'Baloo 2';margin-right:6px;}
-  .doc .note{font-size:13px;color:var(--ink-soft);grid-column:1/2;margin-top:2px;}
-  .doc .term{
-    grid-column:2/3;grid-row:1/3;align-self:center;
-    font-size:11.5px;font-weight:700;color:var(--gold-dark);background:var(--gold-tint);
-    border:1px solid var(--gold-tint2);border-radius:999px;padding:4px 10px;white-space:nowrap;height:fit-content;
-  }
+  /* DETAIL PAGE */
+  .reader-top{display:flex; align-items:center; gap:10px; margin-bottom:22px;}
+  .back-btn{background:var(--surface); border:1.5px solid var(--border); border-radius:9px; padding:8px 14px; font-size:13px; font-weight:700; color:var(--ink-soft); display:flex; align-items:center; gap:6px;}
+  .back-btn:hover{border-color:var(--primary); color:var(--primary);}
+  .reader-head{margin-bottom:22px; display:flex; gap:16px; align-items:flex-start;}
+  .reader-head .icon-badge{width:52px; height:52px; border-radius:14px; background:var(--primary-tint); display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0;}
+  .reader-head .kicker{font-size:11.5px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:6px; display:block;}
+  .reader-head h1{font-size:23px; margin-bottom:0; line-height:1.3;}
 
-  .tips{background:var(--blue-tint);border:1px solid var(--line-blue);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;}
-  .tips h3{color:var(--blue-dark);}
-  .tips ul{margin:0;padding-left:18px;}
-  .tips li{font-size:14px;color:var(--navy);margin-bottom:6px;}
-  .tips li:last-child{margin-bottom:0;}
+  .hikoya-box{background:var(--gold-tint); border-left:3px solid var(--gold); border-radius:0 12px 12px 0; padding:16px 18px; margin-bottom:26px; font-size:13.5px; color:#6B4E12; line-height:1.65;}
+  .hikoya-box b{display:block; font-size:11px; text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px; color:var(--gold-dark);}
 
-  .task{background:var(--gold-tint);border:1px solid var(--gold-tint2);border-radius:var(--radius);padding:18px 20px;margin-bottom:16px;}
-  .task h3{color:var(--gold-dark);}
-  .task p{font-size:14px;color:#5c3f0c;margin-bottom:0;}
+  .doc-progress{display:flex; align-items:center; gap:12px; margin-bottom:20px;}
+  .doc-progress .bar{flex:1; height:9px;}
+  .doc-progress .lbl{font-size:12.5px; font-weight:700; color:var(--primary-dark); white-space:nowrap;}
+  .doc-progress .bar{background:var(--border);}
 
-  /* ---------- QUIZ ---------- */
-  .quiz-card h3{margin-bottom:4px;}
-  .quiz-sub{font-size:13px;color:var(--ink-soft);margin-bottom:16px;}
-  .q-block{border-top:1px solid var(--line);padding:16px 0;}
-  .q-block:first-of-type{border-top:none;padding-top:2px;}
-  .q-text{font-size:14.5px;font-weight:700;color:var(--navy);margin-bottom:10px;}
-  .opt{
-    display:flex;align-items:flex-start;gap:10px;padding:9px 12px;border:1px solid var(--line);
-    border-radius:10px;margin-bottom:7px;cursor:pointer;font-size:13.5px;color:var(--ink);background:var(--paper);
-  }
-  .opt:hover{border-color:var(--blue);}
-  .opt input{margin-top:3px;flex:none;}
-  .opt.correct{border-color:var(--ok);background:var(--ok-bg);}
-  .opt.incorrect{border-color:var(--bad);background:var(--bad-bg);}
-  .q-exp{
-    display:none;font-size:13px;color:var(--ink-soft);background:var(--cream);border-left:3px solid var(--gold);
-    padding:9px 12px;border-radius:0 8px 8px 0;margin-top:8px;
-  }
-  .q-exp.show{display:block;}
-  .q-err{font-size:12.5px;color:var(--bad);margin-top:6px;display:none;}
+  .doc-list{display:flex; flex-direction:column; gap:12px; margin-bottom:20px;}
+  .doc-item{background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:16px 18px; display:flex; gap:14px; align-items:flex-start; transition:border-color .15s, background .15s;}
+  .doc-item.checked{border-color:var(--primary); background:var(--primary-tint);}
+  .doc-checkbox{width:26px; height:26px; border-radius:8px; border:2px solid var(--border); background:var(--surface); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:700; color:#fff; margin-top:2px;}
+  .doc-item.checked .doc-checkbox{background:var(--primary); border-color:var(--primary);}
+  .doc-body{flex:1;}
+  .doc-code{font-size:10.5px; font-weight:700; color:var(--gold-dark); letter-spacing:.04em;}
+  .doc-name{font-size:14.5px; font-weight:700; margin-top:3px; line-height:1.35;}
+  .doc-purpose{font-size:13px; color:var(--ink-soft); line-height:1.55; margin-top:6px;}
+  .doc-purpose b{color:var(--ink);}
 
-  .quiz-actions{display:flex;align-items:center;gap:12px;margin-top:16px;flex-wrap:wrap;}
-  .btn{
-    font-family:'Manrope';font-weight:700;font-size:13.5px;border-radius:10px;padding:10px 20px;
-    border:none;cursor:pointer;
-  }
-  .btn-primary{background:var(--blue);color:#fff;}
-  .btn-primary:hover{background:var(--blue-dark);}
-  .btn-ghost{background:none;border:1px solid var(--line);color:var(--ink-soft);}
-  .btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
-  .score-pill{font-size:13.5px;font-weight:800;color:var(--gold-dark);background:var(--gold-tint);border:1px solid var(--gold-tint2);border-radius:999px;padding:8px 16px;display:none;}
+  .complete-banner{background:var(--primary-tint); color:var(--primary-dark); border-radius:14px; padding:16px 18px; font-size:14px; font-weight:700; text-align:center; margin-top:8px; display:none;}
+  .complete-banner.show{display:block;}
 
-  .nav-buttons{display:flex;justify-content:space-between;margin-top:10px;}
+  .hidden{display:none !important;}
+  .loading-wrap{min-height:100vh; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:14px; background:var(--bg);}
+  .spinner{width:34px; height:34px; border-radius:50%; border:3px solid var(--border); border-top-color:var(--gold); animation:spin .8s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .loading-wrap p{color:var(--ink-soft); font-size:13.5px;}
 
-  /* ---------- FINAL EXAM ---------- */
-  .exam-hero{
-    background:var(--navy);border-radius:var(--radius);padding:24px 26px;color:#fff;margin-bottom:18px;
-  }
-  .exam-hero h2{color:#fff;font-size:22px;margin-bottom:8px;}
-  .exam-hero p{color:#c7d6ef;font-size:14px;max-width:60ch;}
-  .exam-result{
-    display:none;text-align:center;padding:26px;border-radius:var(--radius);margin-bottom:16px;
-    border:1px solid var(--line);
-  }
-  .exam-result .big{font-family:'Baloo 2';font-size:40px;color:var(--navy);}
-  .exam-result .verdict{font-size:15px;font-weight:700;margin-top:6px;}
+  @media (max-width:720px){ .hero h1{font-size:20px;} .who-pill{display:none;} .reader-head{flex-direction:column;} .formula-card .note{margin-left:0;} }
 
-  /* ---------- CERTIFICATE ---------- */
-  .cert-form{display:none;}
-  .cert-form.show{display:block;}
-  .cert-row{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0;}
-  .cert-row input{
-    flex:1;min-width:200px;font-family:'Manrope';font-size:14px;padding:10px 12px;
-    border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);
-  }
-  .cert-row input:focus{outline:none;border-color:var(--blue);}
-  .cert-status{font-size:12.5px;color:var(--ink-soft);margin-top:8px;display:none;}
-  .cert-status.show{display:block;}
+  .cert-banner{background:linear-gradient(135deg,var(--gold-dark),var(--gold)); border-radius:18px; padding:22px 26px; margin-bottom:24px; color:#fff; display:flex; align-items:center; gap:18px; flex-wrap:wrap; box-shadow:var(--shadow-lift);}
+  .cert-banner .icon{font-size:34px;}
+  .cert-banner .txt{flex:1; min-width:200px;}
+  .cert-banner .txt b{display:block; font-family:'Fraunces',serif; font-size:17px; margin-bottom:3px;}
+  .cert-banner .txt span{font-size:12.5px; opacity:.92;}
+  .cert-banner button{background:#fff; color:var(--gold-dark); border:none; border-radius:10px; padding:11px 18px; font-weight:800; font-size:13.5px; white-space:nowrap;}
+  .cert-banner button:hover{opacity:.92;}
 
-  .certificate{
-    display:none;margin-top:22px;background:var(--paper);border:2px solid var(--gold);border-radius:18px;
-    padding:44px 40px;text-align:center;position:relative;
-  }
-  .certificate.show{display:block;}
-  .certificate::before{
-    content:"";position:absolute;inset:10px;border:1px solid var(--line-blue);border-radius:12px;pointer-events:none;
-  }
-  .certificate .kicker{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-dark);}
-  .certificate h2{font-family:'Baloo 2';font-size:26px;color:var(--navy);margin:10px 0 4px;}
-  .certificate .cert-name{font-family:'Baloo 2';font-size:30px;color:var(--blue-dark);margin:18px 0 6px;border-bottom:2px solid var(--gold-tint2);display:inline-block;padding-bottom:6px;}
-  .certificate .cert-org{font-size:13.5px;color:var(--ink-soft);margin-bottom:16px;}
-  .certificate .cert-body{font-size:14.5px;color:var(--ink);max-width:52ch;margin:0 auto 18px;}
-  .certificate .cert-score{font-family:'Baloo 2';font-size:20px;color:var(--gold-dark);margin-bottom:18px;}
-  .certificate .cert-foot{display:flex;justify-content:space-between;align-items:flex-end;margin-top:26px;font-size:12px;color:var(--ink-faint);}
-  .cert-actions{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;}
-  @media print{
+  .cert-page{min-height:100vh; background:#EDEAE0; display:flex; align-items:center; justify-content:center; padding:24px;}
+  .cert-sheet{width:100%; max-width:820px; background:#fff; border-radius:6px; padding:60px 56px; box-shadow:0 20px 60px rgba(0,0,0,.25); position:relative; border:10px solid var(--primary); outline:2px solid var(--gold); outline-offset:-18px;}
+  .cert-sheet .cert-kicker{text-align:center; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--gold-dark); font-weight:800; margin-bottom:6px;}
+  .cert-sheet h1.cert-title{text-align:center; font-family:'Fraunces',serif; font-size:30px; color:var(--primary-dark); margin-bottom:4px;}
+  .cert-sheet .cert-sub{text-align:center; font-size:12.5px; color:#7a7261; margin-bottom:34px;}
+  .cert-sheet .cert-body{text-align:center;}
+  .cert-sheet .cert-body .lbl{font-size:12.5px; color:#8a8270; letter-spacing:.05em; text-transform:uppercase; margin-bottom:10px;}
+  .cert-sheet .cert-name{font-family:'Fraunces',serif; font-size:34px; color:var(--primary-dark); border-bottom:2px solid var(--gold); display:inline-block; padding:0 24px 10px; margin-bottom:22px;}
+  .cert-sheet .cert-desc{font-size:14.5px; color:#4a4536; line-height:1.7; max-width:560px; margin:0 auto 26px;}
+  .cert-sheet .cert-desc b{color:var(--primary-dark);}
+  .cert-sheet .cert-footer{display:flex; justify-content:space-between; align-items:flex-end; margin-top:44px; gap:20px;}
+  .cert-sheet .cert-date{font-size:12.5px; color:#7a7261;}
+  .cert-sheet .cert-seal{width:64px; height:64px; border-radius:50%; border:2.5px solid var(--gold); display:flex; align-items:center; justify-content:center; font-size:26px; color:var(--gold-dark); flex-shrink:0;}
+  .cert-sheet .cert-brand{font-size:12px; color:#7a7261; text-align:right;}
+  .cert-sheet .cert-brand b{color:var(--primary-dark); font-family:'Fraunces',serif; font-size:14px; display:block;}
+  .cert-actions{max-width:820px; width:100%; display:flex; gap:12px; justify-content:center; margin-top:22px;}
+  .cert-actions button{border:none; border-radius:11px; padding:13px 22px; font-weight:800; font-size:14px; cursor:pointer;}
+  .cert-actions .btn-print{background:var(--primary); color:#fff;}
+  .cert-actions .btn-back{background:#fff; color:var(--primary-dark); border:1.5px solid var(--primary) !important;}
+  @media print {
     body *{visibility:hidden;}
-    .certificate, .certificate *{visibility:visible;}
-    .certificate{position:absolute;left:0;top:0;width:100%;border-width:3px;margin:0;}
-    .cert-actions{display:none !important;}
+    .cert-sheet, .cert-sheet *{visibility:visible;}
+    .cert-sheet{position:absolute; left:0; top:0; box-shadow:none; outline:2px solid var(--gold); outline-offset:-18px;}
+    .cert-page{background:#fff; padding:0;}
+  }
+  @media (max-width:720px){
+    .cert-sheet{padding:36px 22px;}
+    .cert-sheet .cert-name{font-size:24px;}
+    .cert-sheet h1.cert-title{font-size:22px;}
   }
 
-  @media (max-width:880px){
-    .hero{grid-template-columns:1fr;}
-    .layout{grid-template-columns:1fr;}
-    .tabs{
-      position:static;display:grid;grid-template-columns:1fr 1fr;max-height:none;
-      gap:10px;padding:2px;
-    }
-    .tab-group-label{grid-column:1/-1;margin:18px 2px 0;}
-    .tab-group-label:first-child{margin-top:2px;}
-    .tab{flex-direction:column;align-items:flex-start;text-align:left;gap:10px;padding:14px;}
-    .tab .name{white-space:normal;}
-    .tab .check{position:absolute;top:10px;right:10px;}
-    .tab{position:relative;}
-  }
-  @media (max-width:480px){
-    .tabs{grid-template-columns:1fr;}
-  }
-  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
 
-  /* ---------- ACCESS GATE ---------- */
-  html.locked body{overflow:hidden;}
-  html:not(.locked) #lockScreen{display:none;}
-  html.locked .app{display:none;}
-  #lockScreen{
-    position:fixed;inset:0;z-index:999;
-    background:radial-gradient(circle at 20% 15%,#173a6e 0%,var(--navy) 55%,#0a1c3a 100%);
-    display:flex;align-items:center;justify-content:center;padding:20px;
-  }
-  .lock-card{
-    width:100%;max-width:380px;background:var(--paper);border-radius:20px;
-    padding:34px 30px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);
-  }
-  .lock-icon{
-    width:56px;height:56px;border-radius:16px;background:var(--blue-tint);color:var(--blue-dark);
-    display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
-  }
-  .lock-icon svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
-  .lock-card h2{font-size:19px;margin-bottom:6px;}
-  .lock-card p{font-size:13.5px;color:var(--ink-soft);margin-bottom:20px;}
-  .lock-input{
-    width:100%;font-family:'Manrope';font-size:15px;letter-spacing:.03em;text-align:center;
-    padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;margin-bottom:12px;color:var(--ink);
-  }
-  .lock-input:focus{outline:none;border-color:var(--blue);}
-  .lock-input.shake{animation:shake .35s;border-color:var(--bad);}
-  @keyframes shake{
-    0%,100%{transform:translateX(0);}
-    20%{transform:translateX(-6px);}
-    40%{transform:translateX(6px);}
-    60%{transform:translateX(-4px);}
-    80%{transform:translateX(4px);}
-  }
-  .lock-error{font-size:12.5px;color:var(--bad);margin:-4px 0 14px;min-height:16px;}
-  .lock-btn{
-    width:100%;font-family:'Manrope';font-weight:700;font-size:14.5px;color:#fff;
-    background:var(--blue);border:none;border-radius:12px;padding:12px;cursor:pointer;
-  }
-  .lock-btn:hover{background:var(--blue-dark);}
-  .lock-foot{font-size:11.5px;color:var(--ink-faint);margin-top:16px;}
+  .cert-mtt-line{text-align:center; font-size:13px; color:#6a6352; margin:-14px 0 20px;}
+  .cert-mtt-line b{color:inherit;}
+  .cert-mtt-field{max-width:820px; width:100%; margin-top:18px; text-align:center;}
+  .cert-mtt-field label{display:block; font-size:12px; color:#6a6352; margin-bottom:8px; font-weight:600;}
+  .cert-mtt-field input{width:100%; max-width:420px; padding:11px 14px; border-radius:10px; border:1.5px solid var(--border); font-size:14px; outline:none; font-family:'Manrope',sans-serif;}
+  .cert-mtt-field input:focus{border-color:var(--primary);}
+  @media print{ .cert-mtt-field{display:none;} }
+
 </style>
 </head>
 <body>
-<div id="lockScreen">
-  <div class="lock-card">
-    <div class="lock-icon"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
-    <h2>Kirish kodi talab qilinadi</h2>
-    <p>323-son buyruq qo'llanmasiga faqat maxsus kod bilan kirish mumkin.</p>
-    <input type="password" id="lockInput" class="lock-input" placeholder="Kirish kodini kiriting" autocomplete="off">
-    <div class="lock-error" id="lockError"></div>
-    <button class="lock-btn" id="lockBtn" type="button">Kirish</button>
-    <div class="lock-foot">Kodni bilmasangiz, tashkilot rahbariyatiga murojaat qiling.</div>
-  </div>
-</div>
-<div class="app">
+<div id="app"></div>
 
-  <div class="hero">
-    <div>
-      <div class="eyebrow"><i>&#9733;</i> Attestatsiyaga tayyorgarlik qo'llanmasi</div>
-      <h1>323-son buyruq — <span>ish hujjatlari</span> bo'yicha to'liq qo'llanma</h1>
-      <p class="lead">O'zbekiston Respublikasi Maktabgacha va maktab ta'limi vazirining 2025-yil 29-avgustdagi 323-son buyrug'i asosida — har bir lavozim uchun hujjatlar ro'yxati, amaliy tavsiyalar va bilim tekshirish testlari.</p>
-      <div class="hero-meta">
-        <span class="meta-pill">323-son buyruq, 29.08.2025</span>
-        <span class="meta-pill">2025-2026 o'quv yilidan amalda</span>
-        <span class="meta-pill">10 yo'nalish · 3 ilova</span>
-      </div>
-    </div>
-    <div class="hero-card">
-      <div class="stat-row">
-        <div class="hero-stat"><b>10</b><span>lavozim yo'nalishi</span></div>
-        <div class="hero-stat"><b>28+</b><span>ish hujjati turi</span></div>
-        <div class="hero-stat"><b>47</b><span>test savoli</span></div>
-      </div>
-      <p>Har bir bo'lim: hujjatlar ro'yxati + saqlash muddati, amaliy tavsiya va qisqa test. Yakunda — attestatsiya uslubidagi yakuniy sinov.</p>
-    </div>
-  </div>
-
-  <div class="progress-wrap">
-    <span class="lbl">Sizning tayyorgarligingiz</span>
-    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    <span class="progress-pct" id="progressPct">0%</span>
-    <button class="progress-reset" id="resetBtn" type="button">Qaytadan boshlash</button>
-  </div>
-
-  <div class="layout">
-    <nav class="tabs" id="tabs" aria-label="Bo'limlar"></nav>
-    <div id="panels"></div>
-  </div>
-
-</div>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const ACCESS_CODE = 'Toifa323';
-const ACCESS_KEY = 'toifa323-access-granted';
+const SUPABASE_URL = "https://elubafxoxbllogjwfcna.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWJhZnhveGJsbG9nandmY25hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMzg0OTYsImV4cCI6MjEwMjgxNDQ5Nn0.9T-HlCcIdX1fsznQ9mDaTVS5ynzTp-iS14cQwKhWyBc";
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-function tryUnlock(){
-  const input = document.getElementById('lockInput');
-  const err = document.getElementById('lockError');
-  const val = input.value.trim();
-  if(val === ACCESS_CODE){
-    document.documentElement.classList.remove('locked');
-    try{ localStorage.setItem(ACCESS_KEY, '1'); }catch(e){}
-    err.textContent = '';
-  } else {
-    err.textContent = "Kod noto'g'ri. Qaytadan urinib ko'ring.";
-    input.classList.remove('shake');
-    void input.offsetWidth;
-    input.classList.add('shake');
-    input.value = '';
-    input.focus();
-  }
+const TITLE = "323-son buyruq — Hujjatlar nazorati";
+const SUBTITLE = "\"323 Ekspress\" metodi: har bir lavozim — alohida vagon. Hujjatingiz tayyor bo'lganda belgilab boring.";
+
+let userCodes = [];
+let bloks = [];
+let state = { view:"loading", userName:null, userCode:null, currentId:null, checked:{} };
+
+function loadingHTML(){ return `<div class="loading-wrap"><div class="spinner"></div><p>Yuklanmoqda...</p></div>`; }
+
+async function loadAllData(){
+  const [{data:b,error:bErr},{data:u,error:uErr}] = await Promise.all([
+    sb.from('hujjat_bolim').select('*').order('sort_order',{ascending:true}),
+    sb.from('user_codes').select('*'),
+  ]);
+  if(bErr||uErr){ console.error(bErr||uErr); return false; }
+  bloks = (b||[]).map(r=>({id:r.id, vagon:r.vagon, icon:r.icon, title:r.title, subtitle:r.subtitle, hikoya:r.hikoya, count:r.doc_count, documents:r.documents||[]}));
+  userCodes = (u||[]).map(r=>({code:r.code, name:r.name, active:r.active}));
+  return true;
 }
-
-(function initLock(){
-  let granted = false;
-  try{ granted = localStorage.getItem(ACCESS_KEY) === '1'; }catch(e){}
-  if(granted) document.documentElement.classList.remove('locked');
-  document.addEventListener('DOMContentLoaded', ()=>{
-    const btn = document.getElementById('lockBtn');
-    const input = document.getElementById('lockInput');
-    btn.addEventListener('click', tryUnlock);
-    input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryUnlock(); });
-    if(!granted) input.focus();
-  });
-})();
-
-const SECTIONS = [
-{
-  id:"umumiy", code:"i", group:"Kirish",
-  title:"Buyruq haqida umumiy ma'lumot",
-  role:"Barcha xodimlar uchun",
-  desc:"323-son buyruqning maqsadi, tarkibi va kim uchun nimaga javobgarligi.",
-  intro:"O'zbekiston Respublikasi Maktabgacha va maktab ta'limi vazirining 2025-yil 29-avgustdagi 323-son buyrug'i \"Maktabgacha ta'lim tashkiloti va pedagoglarning ish hujjatlarini tasdiqlash to'g'risida\" qabul qilingan. Buyruqning maqsadi — pedagog xodimlar faoliyatini samarali tashkil etish, ta'lim-tarbiyaviy jarayonda yagona yondashuvni ta'minlash va ortiqcha qog'ozbozlikka yo'l qo'ymaslik.",
-  docs:[
-    {name:"1-ilova", note:"Davlat maktabgacha ta'lim tashkilotlari va pedagoglarining ish hujjatlari ro'yxati (10 yo'nalish, 01–10)", term:"asosiy"},
-    {name:"2-ilova", note:"Davlat-xususiy sheriklik asosidagi va oilaviy nodavlat MTT hamda pedagoglarining ish hujjatlari ro'yxati", term:"nodavlat"},
-    {name:"3-ilova", note:"Davlat va nodavlat MTT va pedagog xodimlarning ish hujjatlarini yuritish bo'yicha yo'riqnoma — har bir hujjatning to'liq tavsifi va namunalari", term:"yo'riqnoma"}
-  ],
-  tips:[
-    "Yo'riqnoma o'quv yili boshida MTT direktori tomonidan barcha pedagog xodimlarga tanishtiriladi — har bir pedagog uni shaxsan bilishi va amal qilishi shart.",
-    "Mazkur buyruq bilan tasdiqlangan hujjatlar 2025-2026 o'quv yilidan boshlab barcha maktabgacha ta'lim tashkilotlarida yuritiladi.",
-    "Avvalgi — Maktabgacha ta'lim agentligining 2023-yil 28-avgustdagi 99-son buyrug'i o'z kuchini yo'qotgan deb topilgan.",
-    "Buyruq ijrosini nazorat qilish vazirning birinchi o'rinbosari Sh.Karimov zimmasiga yuklatilgan."
-  ],
-  task:"O'z tashkilotingizning turini aniqlang: davlat MTTmisiz yoki davlat-xususiy sheriklik / oilaviy nodavlat MTTmisiz? Shunga qarab 1-ilova yoki 2-ilova sizga tegishli bo'ladi — ikkalasi ham 3-ilovadagi yagona yo'riqnomaga asoslanadi.",
-  quiz:[
-    {q:"Buyruq nechanchi-son va qachon qabul qilingan?", opts:["99-son, 2023-yil 28-avgust","323-son, 2025-yil 29-avgust","595-son, 2024-yil","60-son, 2025-yil"], ans:1, exp:"Buyruq — Maktabgacha va maktab ta'limi vazirining 2025-yil 29-avgustdagi 323-son buyrug'i."},
-    {q:"Tasdiqlangan hujjatlar qaysi o'quv yilidan boshlab yuritiladi?", opts:["2023-2024","2024-2025","2025-2026","2026-2027"], ans:2, exp:"Buyruqning 2-bandiga ko'ra hujjatlar 2025-2026-o'quv yilidan boshlab yuritiladi."},
-    {q:"Qaysi hujjat o'z kuchini yo'qotgan deb topildi?", opts:["OʻRQ-595-son qonun","Maktabgacha ta'lim agentligining 2023-yil 28-avgustdagi 99-son buyrug'i","318-son qaror","2022-yilgi yo'riqnoma"], ans:1, exp:"6-bandga ko'ra 2023-yil 28-avgustdagi 99-son buyruq bekor qilingan."},
-    {q:"Buyruq ijrosini kim nazorat qiladi?", opts:["Vazir E.Karimova shaxsan","Vazirning birinchi o'rinbosari Sh.Karimov","Protokol bo'limi boshlig'i","Tuman MTT bo'limi"], ans:1, exp:"7-bandga ko'ra nazorat vazirning birinchi o'rinbosari Sh.Karimov zimmasiga yuklatilgan."},
-    {q:"Buyruqda nechta ilova bor?", opts:["2 ta","3 ta","4 ta","5 ta"], ans:1, exp:"1-ilova (davlat MTT), 2-ilova (davlat-xususiy/nodavlat MTT) va 3-ilova (yo'riqnoma) — jami 3 ta."}
-  ]
-},
-{
-  id:"01", code:"01", group:"Tashkilot hujjatlari",
-  title:"Boshqaruv hujjatlari",
-  role:"MTT direktori / kotibiyat",
-  desc:"Kiruvchi-chiquvchi hujjatlar, murojaatlar, ustav, moliyaviy hujjatlar va Kuzatuv kengashi materiallari.",
-  docs:[
-    {name:"01-01 — Kiruvchi meʼyoriy-huquqiy hujjatlarni ro'yxatga olish daftari", note:"Tuman (shahar) bo'limidan va boshqa tashkilotlardan kelgan buyruq, xat va boshqa hujjatlar qayd etiladi. XDFU hujjatlar alohida maxsus yig'ma jildda saqlanadi.", term:"zarurat qolmaguncha"},
-    {name:"01-02 — Chiquvchi meʼyoriy-huquqiy hujjatlarni qayd etish daftari", note:"Faoliyat bilan bog'liq chiqarilgan buyruq va xatlar qayd etiladi.", term:"doimiy / 3 yil"},
-    {name:"01-03 — Jismoniy va yuridik shaxslar murojaatlarini ro'yxatga olish daftari", note:"Yozma, og'zaki va elektron murojaatlar qayd etiladi.", term:"3 yil"},
-    {name:"01-04 — Faoliyatga doir meʼyoriy-huquqiy hujjatlar yig'ma jildi", note:"Ustav, kadastr, tashkilot pasporti, attestatsiya/akkreditatsiya hujjatlari, tekshiruv xulosalari, direktor almashganda tuziladigan topshirish-qabul dalolatnomasi.", term:"doimiy / turlicha"},
-    {name:"01-05 — Moliyaviy hujjatlar yig'ma jildi", note:"Yillik smeta, shtatlar jadvali, tarifikatsiya, qo'shimcha pullik xizmatlarga oid hujjatlar.", term:"doimiy / 3 yil"},
-    {name:"01-06 — Kuzatuv kengashiga oid hujjatlar", note:"Kengash raisi har chorakda yig'ilish o'tkazadi, bayonnomalar 3 kun ichida tuman bo'limiga taqdim etiladi.", term:"doimiy / 3 yil"},
-    {name:"01-07 — \"Ilk qadam\" davlat o'quv dasturi va metodik qo'llanmalar", note:"Barcha xodimlar uchun, pedagoglar foydalanishi qulay joyda saqlanadi.", term:"yangilangunga qadar"}
-  ],
-  tips:[
-    "Tashkilot pasporti har yil boshida yangilanadi, tikiladi, sanaladi hamda direktor tomonidan imzolanib, muhrlanib tasdiqlanadi.",
-    "Ustavga o'zgartirish faqat aniq holatlarda kiritiladi: nomi/vakolati o'zgarganda, maqomi o'zgartirilganda, kun tartibi yoki ish soatlari o'zgarganda, quvvati o'zgarganda.",
-    "XDFU (xizmat doirasida foydalanish uchun) hujjatlar oddiy kiruvchi-chiquvchi hujjatlardan alohida — maxsus yig'ma jildda saqlanadi.",
-    "Davlat-xususiy sheriklik va oilaviy nodavlat MTTlarda bitim nusxasi va litsenziya ham shu yig'ma jildga qo'shiladi (2-ilova)."
-  ],
-  task:"01-04 yig'ma jildingizni tekshiring: ustav, kadastr hujjati, tashkilot pasporti va so'nggi tekshiruv dalolatnomasi joyida turibdimi? Pasportning yangilangan sanasini aniqlang.",
-  quiz:[
-    {q:"Tashkilot pasporti qachon yangilanadi?", opts:["Har chorakda","Har yil boshida","Har 3 yilda","Direktor almashganda"], ans:1, exp:"Pasport har yil boshida yangilanib, direktor tomonidan imzolanadi va muhrlanadi."},
-    {q:"XDFU hujjatlar qanday saqlanadi?", opts:["Oddiy kiruvchi daftarga birga qayd etiladi","Maxsus alohida yig'ma jildda", "Umuman saqlanmaydi","Faqat elektron shaklda"], ans:1, exp:"Xizmat doirasida foydalanish uchun hujjatlar alohida maxsus yig'ma jildda saqlanadi."},
-    {q:"Kuzatuv kengashi yig'ilishi qanchalik tez-tez o'tkaziladi?", opts:["Har oyda","Har chorakda","Yiliga bir marta","Zarurat bo'lganda, muddat belgilanmagan"], ans:1, exp:"Kuzatuv kengashi yig'ilishi kengash raisi tomonidan har chorakda o'tkaziladi."}
-  ]
-},
-{
-  id:"02", code:"02", group:"Tarbiyalanuvchilar",
-  title:"Tarbiyalanuvchilarga oid hujjatlar",
-  role:"MTT direktori / kotibiyat",
-  desc:"Yo'llanmalar, ota-onalar bilan shartnomalar va qabul-chiqarish buyruqlari.",
-  docs:[
-    {name:"02-01 — Yo'llanmalar, shartnomalar va buyruqlar yig'ma jildi", note:"Davlat xizmatlari markazi yo'llanmasi, ota-onalar bilan tuzilgan shartnoma va tegishli buyruqlar (elektron va qog'oz shaklda) birga jamlanadi.", term:"5 yil (bola maktabga ketguncha)"}
-  ],
-  tips:[
-    "Shartnoma imzolangan kundan kuchga kiradi va tarbiyalanuvchi tashkilotdan chiqib ketguncha amal qiladi; bola chiqqach shartnoma bekor qilinadi.",
-    "Ro'yxatga olish-chiqarish daftari tikilgan, sahifalari raqamlangan, direktor tomonidan imzolangan va muhrlangan bo'lishi shart.",
-    "Har o'quv yili yakunida (2-sentabrdan 31-avgustgacha) daftar tahlil qilinib yopiladi va yangi bolalar soni, chiqqanlar soni direktor imzosi bilan tasdiqlanadi.",
-    "Bolalarning tartib raqami har yili sentabr oyidan 1-raqamdan qayta boshlanadi."
-  ],
-  task:"Joriy o'quv yil uchun qabul qilingan va chiqarilgan bolalar sonini daftaringizdan hisoblab, yil yakunidagi tahlil formatiga solishtirib ko'ring.",
-  quiz:[
-    {q:"Bolalarning tartib raqami qachon qaytadan 1 dan boshlanadi?", opts:["Har oy boshida","Har yili sentabrdan","Har yarim yillikda","Hech qachon o'zgarmaydi"], ans:1, exp:"Qabul qilingan bolalarning tartib raqami har yili sentabr oyidan 1-raqamdan yuritiladi."},
-    {q:"Ota-onalar bilan tuzilgan shartnoma qachon bekor bo'ladi?", opts:["O'quv yili oxirida avtomatik","Tarbiyalanuvchi tashkilotdan chiqarilganda","Har chorakda qayta tuziladi","Hech qachon"], ans:1, exp:"Tarbiyalanuvchi maktabgacha ta'lim tashkilotidan chiqarilgach, shartnoma bekor qilinadi va kuchini yo'qotadi."},
-    {q:"Ushbu yig'ma jild necha yil saqlanadi?", opts:["1 yil","3 yil","5 yil (bola maktabga ketguncha)","Doimiy"], ans:2, exp:"Saqlash muddati — 5 yil, bola umumta'lim maktabiga ketguncha."}
-  ]
-},
-{
-  id:"03", code:"03", group:"Rahbariyat",
-  title:"MTT direktori",
-  role:"Direktor",
-  desc:"Yillik ish reja — 9 bo'limli asosiy hujjat: pedagogik kengash, seminarlar, hamkorlik va ota-onalar yig'ilishlari.",
-  docs:[
-    {name:"03-01 — Yillik ish rejasi (9 bo'lim)", note:"1) Asosiy vazifalar 2) Malaka/attestatsiya rejasi 3) Ishlab chiqarish yig'ilishlari 4) Pedagogik kengash 5) O'quv-amaliy seminarlar 6) Jamoa bo'lib kuzatish 7) Hamkorlik ish rejasi 8) Ota-onalar yig'ilishlari 9) Mundarija.", term:"doimiy / 3 yil"}
-  ],
-  tips:[
-    "Pedagogik kengash yiliga 4 marta — avgust, noyabr, fevral, may oylarida o'tkaziladi; kun tartibiga 3 tadan ortiq bo'lmagan dolzarb masala kiritiladi.",
-    "Umumiy ishlab chiqarish yig'ilishi yiliga 2 marta — avgust (yangi yil rejasi bilan tanishtirish) va may (yakunlar) oylarida o'tkaziladi.",
-    "O'quv-amaliy seminarlar yiliga 2 marta — oktabr va yanvar oylarida tashkil etiladi.",
-    "Pedagogik jarayonni jamoa bo'lib kuzatish har guruhda yiliga 1 marta rejalashtiriladi; ish staji 1 yildan kam yosh mutaxassislar uchun bunday kuzatuv rejalashtirilmaydi.",
-    "Umumiy ota-onalar yig'ilishi yiliga 2 marta — sentabr va may oylarida, kun tartibida 3 tadan ortiq bo'lmagan masala bilan o'tkaziladi."
-  ],
-  task:"Yillik ish rejangizdagi 4 ta pedagogik kengash sanasini (avgust/noyabr/fevral/may) va ularning har biri uchun rejalashtirilgan 3 tadan ko'p bo'lmagan kun tartibi masalalarini ro'yxat qiling.",
-  quiz:[
-    {q:"Pedagogik kengash yiliga necha marta va qaysi oylarda o'tkaziladi?", opts:["2 marta: sentabr, may","4 marta: avgust, noyabr, fevral, may","3 marta: oktabr, yanvar, aprel","Har oyda"], ans:1, exp:"Pedagogik kengash yiliga 4 marta — avgust, noyabr, fevral, may oylarida o'tkaziladi."},
-    {q:"Umumiy ishlab chiqarish yig'ilishi qaysi oylarda bo'lib o'tadi?", opts:["Sentabr va yanvar","Avgust va may","Oktabr va fevral","Har chorakda"], ans:1, exp:"Ishlab chiqarish yig'ilishi yiliga 2 marta — avgust va may oylarida o'tkaziladi."},
-    {q:"Jamoa bo'lib kuzatish kimlar uchun rejalashtirilmaydi?", opts:["Oliy toifali pedagoglar uchun","Ish staji 1 yildan kam yosh mutaxassislar uchun","Faqat tarbiyachilar uchun","Hamma uchun rejalashtiriladi, istisno yo'q"], ans:1, exp:"Pedagogik ish staji 1 yildan kam bo'lgan yosh mutaxassislar uchun bunday kuzatuvlar rejalashtirilmaydi."}
-  ]
-},
-{
-  id:"04", code:"04", group:"Rahbariyat",
-  title:"Direktor o'rinbosari",
-  role:"Direktor o'rinbosari",
-  desc:"Yillik ish reja, ta'lim-tarbiya jarayonini nazorat qilish turlari va yillik hisobot.",
-  docs:[
-    {name:"04-01 — Yillik ish rejasi va yillik hisobot", note:"Ta'lim-tarbiya jarayoni samaradorligini oshirish, tashkiliy-metodik ishlar, ma'naviy-ma'rifiy tadbirlar bo'limlaridan iborat. Yillik hisobot may oyidagi pedagogik kengashda muhokama qilinadi.", term:"3 yil"}
-  ],
-  tips:[
-    "Uch nazorat turi rejalashtiriladi: frontal (taxminan 3 marta), mavzuli (taxminan 2 marta), qiyosiy (taxminan 2 marta) — guruhlar sonidan kelib chiqib.",
-    "Frontal nazorat — tarbiyachining umumiy ish faoliyati va guruhdagi sharoitni; mavzuli nazorat — bitta yo'nalish bo'yicha faoliyatni; qiyosiy nazorat — ikki yoki undan ortiq parallel guruhni taqqoslab o'rganadi.",
-    "\"Metodik mahorat soati\" kuzatuvlari nazorat turlari bilan uyg'unlashtirilib olib boriladi va natijalar maxsus jadvalda qayd etiladi.",
-    "Yillik hisobot bir marta — o'quv yili yakunida tayyorlanadi va pedagogik kengashda o'qib eshittiriladi."
-  ],
-  task:"O'z nazorat jadvalingizni ko'rib chiqing: joriy o'quv yilda frontal, mavzuli va qiyosiy nazoratlarning nechtasi bajarilganini sanab chiqing.",
-  quiz:[
-    {q:"Qiyosiy nazorat nimani o'rganadi?", opts:["Bitta guruhning bir yillik dinamikasini","Ikki yoki undan ortiq parallel guruhdagi faoliyatni taqqoslab","Faqat direktorning ishini","Faqat hujjatlar to'g'riligini"], ans:1, exp:"Qiyosiy nazorat ikki va undan ortiq parallel guruhlardagi pedagogik faoliyatni taqqoslab o'rganadi."},
-    {q:"Yillik hisobot qachon va necha marta tayyorlanadi?", opts:["Har chorakda 4 marta","O'quv yili yakunida 1 marta","Har oyda","Hech qachon yozilmaydi"], ans:1, exp:"Yillik hisobot bir o'quv yil davomida bir marotaba, o'quv yili yakunida tayyorlanadi."},
-    {q:"Frontal nazorat nimani qamrab oladi?", opts:["Faqat bitta bolani","Tarbiyachining ish faoliyati va guruhdagi umumiy sharoitni","Faqat moliyaviy hujjatlarni","Faqat ota-onalar bilan aloqani"], ans:1, exp:"Frontal nazorat tarbiyachining ish faoliyati, sharoitlar va bolalar rivojlanishini kuzatishni qamrab oladi."}
-  ]
-},
-{
-  id:"05", code:"05", group:"Pedagoglar",
-  title:"Tarbiyachi",
-  role:"Guruh tarbiyachisi",
-  desc:"Ish jurnali, davomat daftari va bolalarning rivojlanish xaritasi — tarbiyachining kundalik asosiy hujjatlari.",
-  docs:[
-    {name:"05-01 — \"Ilk qadam\" davlat o'quv dasturi", note:"Pedagogning ish stolida turadi va doimiy foydalaniladi.", term:"yangilangunga qadar"},
-    {name:"05-02 — Oylik ish reja (Ish jurnali)", note:"Kun tartibi, ertalabki badantarbiya, umumiy guruh faoliyati, markazlardagi faoliyat va sayrni o'z ichiga oladi.", term:"3 yil"},
-    {name:"05-03 — Bolalar davomatini qayd etish daftari (tabel, filtr, ota-onalar ma'lumotlari)", note:"Har kuni soat 9:00 dan kechiktirmay to'ldiriladi; bosqichma-bosqich elektron shaklga o'tkazilmoqda.", term:"zarurat qolmaguncha"},
-    {name:"05-04 — Bolalarning rivojlanish xaritalari", note:"3 bosqichda to'ldiriladi: dastlabki (sentabr), oraliq (dekabr-yanvar), yakuniy (may).", term:"5 yil (bola ketguncha)"}
-  ],
-  tips:[
-    "Ertalabki badantarbiya: har oyning 1–15-kunlari predmetsiz, 16–31-kunlari predmetli mashqlar rejalashtiriladi.",
-    "Besh kunlik suhbat mavzulari qat'iy: dushanba — Kelajak soati, seshanba — Odob-axloq qoidalari, chorshanba — Huquqiy savodxonlik, payshanba — Yo'l harakati qoidalari, juma — Madaniy-gigiyenik ko'nikmalar.",
-    "6–7 yoshli (tayyorlov guruhi) bolalar uchun yakuniy bosqichda rivojlanish xaritasi o'rniga maktabga tayyorlik xaritasi to'ldiriladi.",
-    "\"Pedagog izohi\" ustuniga ko'nikma zaiflashgan yoki rivojlanish sekinlashgan holatlarning sababi (stress, kasallik, uzoq kelmaslik) albatta yoziladi."
-  ],
-  task:"Joriy hafta mavzusi bo'yicha besh kunlik suhbat rejangizni tuzing va har kuniga mos mavzuni (Kelajak soati, Odob-axloq va h.k.) belgilang.",
-  quiz:[
-    {q:"Bolalarning rivojlanish xaritasi bo'yicha dastlabki kuzatuv qachon o'tkaziladi?", opts:["Dekabr-yanvar","Sentabr","May","Har oy"], ans:1, exp:"Dastlabki kuzatuv o'quv yilining boshida, sentabr oyida o'tkaziladi."},
-    {q:"Payshanba kuni qanday mavzuda suhbat tavsiya etiladi?", opts:["Kelajak soati","Odob-axloq qoidalari","Yo'l harakati qoidalari","Huquqiy savodxonlik"], ans:2, exp:"Payshanba — \"Yo'l harakati qoidalari\" mavzusida suhbat o'tkaziladi."},
-    {q:"6-7 yoshli bolalar uchun yakuniy bosqichda nima to'ldiriladi?", opts:["Yana bir rivojlanish xaritasi","Maktabga tayyorlik xaritasi","Hech narsa to'ldirilmaydi","Faqat tabel"], ans:1, exp:"6-7 yoshdagi MTT bitiruvchilari uchun yakuniy bosqichda bolani maktabga tayyorgarlik xaritasi to'ldiriladi."}
-  ]
-},
-{
-  id:"06", code:"06", group:"Mutaxassislar",
-  title:"Psixolog",
-  role:"MTT psixologi",
-  desc:"Diagnostika, maxfiy psixologik xulosalar va korreksion ish jurnali.",
-  docs:[
-    {name:"06-01 — Yillik ish reja va yillik hisobot", note:"Psixoprofilaktika, psixodiagnostika, psixokorreksiya, targ'ibot va metodik ishlar bo'limlaridan iborat.", term:"3 yil"},
-    {name:"06-02 — Psixologik xulosalar va bolaning psixologik rivojlanish xaritasi", note:"Xizmat doirasidagi maxfiy hujjat (XDFU). Ota-onadan yozma rozilik olingandan so'ng yuritiladi.", term:"3 yil (bola ketgandan so'ng)"},
-    {name:"06-03 — Korreksion ish jurnali", note:"Past ko'rsatkichli bolalar ro'yxati va ular bilan olib borilgan tuzatish ishlari qayd etiladi.", term:"3 yil"}
-  ],
-  tips:[
-    "Bilish jarayonlari (tasavvur, xotira, diqqat, tafakkur, mayda motorika, nutq) diagnostikasi sentabr-oktabr oylarida katta va tayyorlov guruhlarida o'tkaziladi.",
-    "Diagnostika ballari: 3 — yuqori, 2 — o'rta, 1 — past; bilish jarayonini aniqlashda 2 va undan ortiq metodika qo'llanadi.",
-    "Har qanday psixologik ish boshlanishidan oldin ota-onadan yozma rozilik xati olinishi shart.",
-    "Maxfiylik faqat uch holatda buziladi: bola o'ziga/boshqalarga zarar niyati, zo'ravonlik holati yoki huquqni muhofaza qiluvchi organlarning talabi bo'yicha."
-  ],
-  task:"Katta va tayyorlov guruhi bolalari ro'yxatini tayyorlab, sentabr-oktabr diagnostika jadvalini tuzing hamda ota-onalar uchun rozilik xatlarini oldindan tarqating.",
-  quiz:[
-    {q:"Bilish jarayonlari diagnostikasi qachon o'tkaziladi?", opts:["Sentabr-oktabr","Dekabr-yanvar","May-iyun","Yil davomida istalgan vaqt"], ans:0, exp:"Diagnostika o'quv yilining sentabr-oktabr oylarida katta va tayyorlov guruhlarida o'tkaziladi."},
-    {q:"06-02 hujjati qanday maqomga ega?", opts:["Ochiq, hammaga ko'rsatiladi","Xizmat doirasidagi maxfiy hujjat (XDFU)","Faqat direktor uchun ochiq","Faqat ota-onalar uchun ochiq"], ans:1, exp:"Psixologik xulosalar va rivojlanish xaritasi xizmat doirasidagi maxfiy hujjat hisoblanadi."},
-    {q:"Maxfiylik qaysi holatda buzilishi mumkin?", opts:["Har doim, so'rov bo'lsa yetarli","Bola o'ziga yoki boshqalarga zarar niyati bo'lsa","Hech qachon buzilmaydi","Ota-ona so'ramasa ham"], ans:1, exp:"Bola o'ziga/boshqalarga jiddiy zarar yoki zo'ravonlik xabarini bersa yoki huquqni muhofaza organlari talab qilsa, maxfiylik buziladi."}
-  ]
-},
-{
-  id:"07", code:"07", group:"Mutaxassislar",
-  title:"Musiqa rahbari",
-  role:"Musiqa rahbari",
-  desc:"Yillik ish reja, ish jadvali va bolalar bilan yakka tartibdagi ishlash rejasi.",
-  docs:[
-    {name:"07-01 — Yillik ish reja va yillik hisobot", note:"Musiqani tinglash, qo'shiq kuylash, ritmik harakat, musiqa savodi va cholg'ularda ijro yo'nalishlari bo'yicha tuziladi.", term:"3 yil"},
-    {name:"07-02 — Bolalar bilan yakka tartibda ishlash rejasi", note:"Rivojlanish xaritasida aniqlangan kamchiliklar asosida tuziladi.", term:"3 yil"}
-  ],
-  tips:[
-    "Yillik ish reja tashkilot direktori tomonidan tasdiqlanishi shart.",
-    "Yakka tartibdagi ishlash rejasida o'zlashtirilmagan indikator, hamkorlikda bajarilish usuli va natijaviylik muddati aniq ko'rsatiladi.",
-    "Hujjatlar musiqa rahbari tomonidan ixtiyoriy ravishda elektron yoki qo'lyozma shaklda yuritiladi, ammo sahifalanib, tikilib, direktor tomonidan tasdiqlanishi kerak."
-  ],
-  task:"Joriy chorak uchun repertuar ro'yxatini yillik reja jadvalidagi \"Repertuar\" bo'limiga mos tarzda tayyorlang.",
-  quiz:[
-    {q:"07-02 hujjati qaysi asosda tuziladi?", opts:["Direktorning shaxsiy buyrug'i bilan","Rivojlanish xaritasida aniqlangan kamchiliklar asosida","Har oyning boshida tasodifiy","Faqat ota-onalar so'rovi bilan"], ans:1, exp:"Yakka tartibda ishlash rejasi bolaning rivojlanish xaritasida aniqlangan kamchiliklar asosida tuziladi."},
-    {q:"Musiqa rahbarining hujjatlari kim tomonidan tasdiqlanishi shart?", opts:["Faqat o'zi","Tashkilot direktori","Faqat psixolog","Tasdiqlash shart emas"], ans:1, exp:"Hujjatlar sahifalanib, tikilib, tashkilot direktori tomonidan tasdiqlanadi."}
-  ]
-},
-{
-  id:"08", code:"08", group:"Mutaxassislar",
-  title:"Jismoniy tarbiya yo'riqchisi",
-  role:"Jismoniy tarbiya yo'riqchisi",
-  desc:"Yillik ish reja, mashg'ulot vaqti taqsimoti va yakka tartibdagi ishlash daftari.",
-  docs:[
-    {name:"08-01 — Yillik ish reja va yillik hisobot", note:"Yosh guruhi kesimida yirik va mayda motorika, sensomotorika hamda harakatli o'yinlar bo'yicha oylik jadval shaklida tuziladi.", term:"3 yil"},
-    {name:"08-02 — Bolalar bilan yakka tartibda ishlash rejasi", note:"Jismoniy tayyorgarlik va harakat ko'nikmalari past bo'lgan bolalar uchun tuziladi.", term:"3 yil"}
-  ],
-  tips:[
-    "Jismoniy tarbiya mashg'uloti 3 qismdan iborat: tashkiliy qism (yurish, yugurish, saflanish), asosiy qism (mashqlar, yangi harakat, harakatli o'yin) va yakuniy qism (tinch o'yin, nafas mashqlari).",
-    "Ta'lim jarayonini o'tkazish vaqtini taqsimlash jadvali direktor o'rinbosari bilan kelishilib, direktor tomonidan imzo va muhr bilan tasdiqlanadi.",
-    "Yakka tartibdagi ishlash daftarida bolaning o'zlashtirilmagan indikatori, ishlash usuli va natija sanasi aniq ko'rsatiladi."
-  ],
-  task:"Joriy oy uchun har bir yosh guruhida qaysi asosiy harakat turlari (yurish, yugurish, sakrash, emaklash, uloqtirish) ustida ishlanayotganini yillik reja jadvalida belgilang.",
-  quiz:[
-    {q:"Jismoniy tarbiya mashg'uloti nechta qismdan iborat?", opts:["2 qism","3 qism (tashkiliy, asosiy, yakuniy)","5 qism","Qism ajratilmaydi"], ans:1, exp:"Mashg'ulot tashkiliy, asosiy va yakuniy qismlardan iborat bo'ladi."},
-    {q:"08-02 hujjatiga kimlar kiritiladi?", opts:["Barcha bolalar tekis tartibda","Jismoniy tayyorgarligi past bo'lgan bolalar","Faqat sportga qiziqqan bolalar","Faqat tayyorlov guruhi bolalari"], ans:1, exp:"Yakka tartibda ishlash rejasiga jismoniy sifat ko'rsatkichlari meʼyordan past bolalar kiritiladi."}
-  ]
-},
-{
-  id:"09", code:"09", group:"Mutaxassislar",
-  title:"O'qituvchi-defektolog (logoped)",
-  role:"Defektolog / logoped",
-  desc:"Yillik reja, ro'yxatga olish kitobi, bolaning nutq xaritasi va yakka mashg'ulotlar.",
-  docs:[
-    {name:"09-01 — Yillik ish reja, guruhli faoliyat rejasi va yillik hisobot", note:"Nutq o'stirish va to'g'ri tovush talaffuzini shakllantirish yo'nalishlari bo'yicha tuziladi.", term:"3 yil"},
-    {name:"09-02 — Ro'yxatga olish/chiqarish va qatnov kitobi", note:"Navbatga qo'yilgan bolalar ro'yxatini ham o'z ichiga oladi.", term:"3 yil"},
-    {name:"09-03 — Bolaning nutq xaritasi", note:"To'liq diagnostik ma'lumotlar: artikulyatsion apparat, fonematik idrok, lug'at boyligi, grammatik tuzilish va boshqalar.", term:"zarurat qolmaguncha"},
-    {name:"09-04 — Bolalar bilan yakka tartibda ishlash rejasi", note:"Uch bosqichli: tovush qo'yish, mustahkamlash, differensatsiya.", term:"zarurat qolmaguncha"}
-  ],
-  tips:[
-    "Guruhli faoliyat 20-25 daqiqa davom etadi; haftada nutq o'stirish faoliyati 1 marta, tovush talaffuzini shakllantirish faoliyati 1 marta o'tkazilishi tavsiya etiladi.",
-    "Yakka tartibdagi faoliyatlar 15-20 daqiqa davom etadi va uch bosqichdan biriga (tovush qo'yish / mustahkamlash / differensatsiya) mos tanlanadi.",
-    "Yillik hisobotda tashxis turlari (dislaliya, alaliya, dizartriya, duduqlanish, rinolaliya va h.k.) bo'yicha bolalar soni alohida ko'rsatiladi."
-  ],
-  task:"Joriy o'quv yilida qamrab olingan bolalar ro'yxatini tashxis turlari bo'yicha guruhlab, yillik hisobot jadvaliga tayyorlab qo'ying.",
-  quiz:[
-    {q:"Guruhli faoliyat necha daqiqa davom etadi?", opts:["10-15 daqiqa","20-25 daqiqa","30-40 daqiqa","1 soat"], ans:1, exp:"Guruhli faoliyatlar 20-25 daqiqa davomida olib boriladi."},
-    {q:"Yakka tartibdagi faoliyatning uchta bosqichi qaysilar?", opts:["Kirish, asosiy, yakun","Tovush qo'yish, mustahkamlash, differensatsiya","Diagnostika, reja, hisobot","Test, tahlil, xulosa"], ans:1, exp:"Bosqichlar: tovush qo'yish, mustahkamlash va differensatsiya."},
-    {q:"Bolaning nutq xaritasi qancha muddat saqlanadi?", opts:["Doimiy","5 yil","3 yil","Zarurat qolmaguncha"], ans:3, exp:"09-03 hujjati zarurat qolmaguncha saqlanadi."}
-  ]
-},
-{
-  id:"10", code:"10", group:"Mutaxassislar",
-  title:"Til o'qituvchisi",
-  role:"Til o'qituvchisi",
-  desc:"Faoliyatni tashkil etish jadvali va mavzuli reja — eng qisqa, ammo muhim yo'nalish.",
-  docs:[
-    {name:"10-01 — Faoliyatni tashkil etish jadvali va mavzuli rejasi", note:"Jadval guruhlar soni asosida kun davomidagi aniq vaqtlarni belgilaydi; mavzuli reja o'quv dasturi asosida tuziladi.", term:"3 yil (zarurat qolmaguncha)"}
-  ],
-  tips:[
-    "Jadval va mavzuli reja tikilgan, sahifalangan hamda direktor tomonidan imzolanib, muhrlangan bo'lishi lozim.",
-    "Kundalik faoliyat ishlanmasi yillik reja mavzulari asosida tuzilib, MTT direktori yoki direktor o'rinbosari tomonidan ko'rib chiqilib tasdiqlanadi.",
-    "Hujjatlar til o'qituvchisi tomonidan ixtiyoriy ravishda elektron yoki qo'lyozma shaklda yuritilishi mumkin."
-  ],
-  task:"Joriy hafta uchun mavzuli reja va faoliyat jadvalingizni solishtirib, vaqt taqsimotining guruhlar soniga mosligini tekshiring.",
-  quiz:[
-    {q:"10-01 hujjati kim tomonidan tasdiqlanishi shart?", opts:["Faqat o'zi tomonidan","Tashkilot direktori tomonidan","Tuman bo'limi tomonidan","Ota-onalar tomonidan"], ans:1, exp:"Jadval va mavzuli reja tashkilot direktori tomonidan imzo va muhr bilan tasdiqlanadi."},
-    {q:"Faoliyatni tashkil etish jadvali nimaga asoslanib tuziladi?", opts:["Til o'qituvchisining shaxsiy istagiga","Guruhlar sonidan kelib chiqib kun davomidagi vaqtga","Faqat ota-onalar so'roviga","Tasodifiy tartibda"], ans:1, exp:"Jadval tashkilotdagi guruhlar sonini inobatga olgan holda kun davomidagi aniq vaqtlarni belgilaydi."}
-  ]
+async function loadProgress(code){
+  const {data} = await sb.from('hujjat_progress').select('*').eq('code',code).maybeSingle();
+  state.checked = data ? (data.checked||{}) : {};
 }
-];
-
-const FINAL_EXAM = {
-  title:"Yakuniy sinov — attestatsiyaga tayyorgarlik",
-  desc:"Barcha bo'limlar bo'yicha 12 ta savol. Kamida 9 ta to'g'ri javob — yaxshi natija hisoblanadi.",
-  questions:[
-    {q:"323-son buyruq qaysi vazirlik tomonidan qabul qilingan?", opts:["Xalq ta'limi vazirligi","Maktabgacha va maktab ta'limi vazirligi","Oliy ta'lim vazirligi","Adliya vazirligi"], ans:1},
-    {q:"1-ilova qaysi tashkilotlar uchun mo'ljallangan?", opts:["Faqat xususiy MTT","Davlat maktabgacha ta'lim tashkilotlari","Umumta'lim maktablari","Oliy ta'lim muassasalari"], ans:1},
-    {q:"2-ilovaga qo'shimcha ravishda qanday hujjatlar kiritilgan (davlat MTTda yo'q)?", opts:["Ustav va kadastr","Bitim nusxasi va litsenziya","Yillik ish reja","Rivojlanish xaritasi"], ans:1},
-    {q:"Pedagogik kengash yiliga necha marta o'tkaziladi?", opts:["2 marta","3 marta","4 marta","6 marta"], ans:2},
-    {q:"Bolalarning rivojlanish xaritasida nechta kuzatuv bosqichi bor?", opts:["2 bosqich","3 bosqich (dastlabki, oraliq, yakuniy)","4 bosqich","5 bosqich"], ans:1},
-    {q:"Psixologik xulosalar qanday hujjat maqomiga ega?", opts:["Ochiq umumiy hujjat","Xizmat doirasidagi maxfiy hujjat","Faqat statistik hisobot","Reklama materiali"], ans:1},
-    {q:"Jismoniy tarbiya mashg'uloti nechta qismdan iborat?", opts:["2 qism","3 qism","4 qism","5 qism"], ans:1},
-    {q:"Defektolog/logopedning yakka mashg'uloti necha daqiqa davom etadi?", opts:["5-10 daqiqa","15-20 daqiqa","30-40 daqiqa","45-60 daqiqa"], ans:1},
-    {q:"Umumiy ota-onalar yig'ilishi qaysi oylarda o'tkaziladi?", opts:["Sentabr va may","Oktabr va fevral","Har oyda","Faqat may oyida"], ans:0},
-    {q:"Qaysi buyruq 323-son buyruq bilan bekor qilindi?", opts:["2022-yilgi 45-son buyruq","2023-yil 28-avgustdagi 99-son buyruq","2024-yilgi 120-son buyruq","Bekor qilingan buyruq yo'q"], ans:1},
-    {q:"Tashkilot pasporti qachon yangilanadi?", opts:["Har yil boshida","Har 5 yilda","Direktor almashganda","Yangilanmaydi"], ans:0},
-    {q:"Buyruq ijrosini kim nazorat qiladi?", opts:["Protokol bo'limi","Vazirning birinchi o'rinbosari","Tuman bo'limi mudiri","Kuzatuv kengashi"], ans:1}
-  ]
-};
-
-const tabsEl = document.getElementById('tabs');
-const panelsEl = document.getElementById('panels');
-const progress = {};
-
-const ICONS = {
-  i:'<path d="M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16h6"/>',
-  '01':'<path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"/>',
-  '02':'<circle cx="9" cy="8" r="3"/><path d="M4 20c0-3 2.5-5 5-5s5 2 5 5"/><circle cx="17" cy="9" r="2.2"/><path d="M15.2 20c0-2.1 1-3.7 2.8-4.3"/>',
-  '03':'<rect x="3" y="8" width="18" height="11" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>',
-  '04':'<rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="m9 13 2 2 4-4"/>',
-  '05':'<path d="M12 6c-1.5-1.2-4-2-7-2v13c3 0 5.5.8 7 2 1.5-1.2 4-2 7-2V4c-3 0-5.5.8-7 2z"/><path d="M12 6v13"/>',
-  '06':'<path d="M12 20s-7-4.6-9.3-9C1.3 8 2.4 5 5.4 4.4 7.4 4 9.4 5 12 7.5 14.6 5 16.6 4 18.6 4.4c3 .6 4.1 3.6 2.7 6.6C19 15.4 12 20 12 20z"/>',
-  '07':'<circle cx="6.5" cy="18" r="2.3"/><circle cx="17" cy="16" r="2.3"/><path d="M8.8 18V5.5L19.3 3v13"/>',
-  '08':'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.3"/><circle cx="12" cy="12" r=".9" fill="currentColor" stroke="none"/>',
-  '09':'<path d="M4 5h16a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><circle cx="8" cy="10.5" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="10.5" r=".9" fill="currentColor" stroke="none"/><circle cx="16" cy="10.5" r=".9" fill="currentColor" stroke="none"/>',
-  '10':'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.4 2.5 3.7 6 3.7 9s-1.3 6.5-3.7 9c-2.4-2.5-3.7-6-3.7-9S9.6 5.5 12 3z"/>',
-  final:'<path d="M12 2.5l2.9 6 6.6.8-4.8 4.6 1.2 6.6L12 17.2 6.1 20.5l1.2-6.6-4.8-4.6 6.6-.8L12 2.5z"/>'
-};
-
-function buildTabs(){
-  let lastGroup = null;
-  SECTIONS.forEach((s,i)=>{
-    if(s.group !== lastGroup){
-      const lbl = document.createElement('div');
-      lbl.className='tab-group-label';
-      lbl.textContent = s.group;
-      tabsEl.appendChild(lbl);
-      lastGroup = s.group;
-    }
-    const b = document.createElement('button');
-    b.className='tab';
-    b.type='button';
-    b.dataset.target = 's-'+s.id;
-    b.innerHTML =
-      '<span class="tab-icon"><svg viewBox="0 0 24 24">'+(ICONS[s.code]||'')+'</svg></span>'+
-      '<span class="tab-content">'+
-        '<span class="tab-top"><span class="idx">'+(s.code==='i'?'KIRISH':s.code)+'</span><span class="name">'+s.title+'</span></span>'+
-        '<span class="role-caption">'+s.role+'</span>'+
-      '</span>'+
-      '<i class="check">&#10003;</i>';
-    b.addEventListener('click',()=>selectPanel('s-'+s.id));
-    tabsEl.appendChild(b);
-  });
-  const flbl = document.createElement('div');
-  flbl.className='tab-group-label';
-  flbl.textContent='Yakun';
-  tabsEl.appendChild(flbl);
-  const fb = document.createElement('button');
-  fb.className='tab final';
-  fb.type='button';
-  fb.dataset.target='s-final';
-  fb.innerHTML =
-    '<span class="tab-icon"><svg viewBox="0 0 24 24">'+ICONS.final+'</svg></span>'+
-    '<span class="tab-content">'+
-      '<span class="tab-top"><span class="idx">TEST</span><span class="name">Yakuniy sinov</span></span>'+
-      '<span class="role-caption">Sertifikat olish</span>'+
-    '</span>'+
-    '<i class="check">&#10003;</i>';
-  fb.innerHTML = '<span class="idx">&#9733;</span><span class="name">Yakuniy sinov</span><i class="check">&#10003;</i>';
-  fb.addEventListener('click',()=>selectPanel('s-final'));
-  tabsEl.appendChild(fb);
-}
-
-function renderDoc(d){
-  return '<div class="doc"><div class="idxname">'+d.name+'</div><div class="note">'+d.note+'</div><div class="term">'+d.term+'</div></div>';
-}
-
-function renderQuiz(qid, questions){
-  let html = '<div class="quiz-card card" id="quiz-'+qid+'">';
-  html += '<h3><span class="dot"></span>Bilimingizni tekshiring</h3><p class="quiz-sub">Barcha savollarga javob bering, so\'ng natijani ko\'ring.</p>';
-  questions.forEach((q,qi)=>{
-    html += '<div class="q-block" data-qi="'+qi+'">';
-    html += '<div class="q-text">'+(qi+1)+'. '+q.q+'</div>';
-    q.opts.forEach((o,oi)=>{
-      html += '<label class="opt" data-oi="'+oi+'"><input type="radio" name="'+qid+'-q'+qi+'" value="'+oi+'"><span>'+o+'</span></label>';
-    });
-    html += '<div class="q-err">Iltimos, javobni tanlang.</div>';
-    html += '<div class="q-exp"></div>';
-    html += '</div>';
-  });
-  html += '<div class="quiz-actions"><button class="btn btn-primary" data-check="'+qid+'">Tekshirish</button><button class="btn btn-ghost" data-retry="'+qid+'" style="display:none;">Qayta urinish</button><span class="score-pill" id="score-'+qid+'"></span></div>';
-  html += '</div>';
-  return html;
-}
-
-function buildPanels(){
-  SECTIONS.forEach((s,i)=>{
-    const p = document.createElement('div');
-    p.className='panel';
-    p.id = 's-'+s.id;
-    let docsHtml = '';
-    if(s.docs && s.docs.length){
-      docsHtml = '<div class="card"><h3><span class="dot"></span>Hujjatlar ro\'yxati va saqlash muddati</h3><div class="doclist">'+s.docs.map(renderDoc).join('')+'</div></div>';
-    }
-    let introHtml = s.intro ? '<div class="card"><p style="margin:0;color:var(--ink-soft);font-size:14.5px;">'+s.intro+'</p></div>' : '';
-    p.innerHTML =
-      '<div class="section-head">'+
-        '<div class="tagrow"><span class="badge-num">'+(s.code==='i'?'★':s.code)+'</span><span class="badge-role">'+s.role+'</span></div>'+
-        '<h2>'+s.title+'</h2>'+
-        '<p class="desc">'+s.desc+'</p>'+
-      '</div>'+
-      introHtml + docsHtml +
-      '<div class="tips"><h3>Amaliy tavsiyalar</h3><ul>'+s.tips.map(t=>'<li>'+t+'</li>').join('')+'</ul></div>'+
-      '<div class="task"><h3>Amaliy topshiriq</h3><p>'+s.task+'</p></div>'+
-      renderQuiz(s.id, s.quiz)+
-      renderNav(i);
-    panelsEl.appendChild(p);
-  });
-
-  const fp = document.createElement('div');
-  fp.className='panel';
-  fp.id='s-final';
-  fp.innerHTML =
-    '<div class="exam-hero"><h2>'+FINAL_EXAM.title+'</h2><p>'+FINAL_EXAM.desc+'</p></div>'+
-    '<div class="exam-result" id="exam-result"><div class="big" id="exam-score">0/12</div><div class="verdict" id="exam-verdict"></div></div>'+
-    renderQuiz('final', FINAL_EXAM.questions)+
-    '<div class="card cert-form" id="cert-form">'+
-      '<h3><span class="dot"></span>Sertifikatingizni oling</h3>'+
-      '<p style="color:var(--ink-soft);font-size:13.5px;margin-bottom:0;">Testni tugatgach, ismingizni kiriting va shaxsiy sertifikat yarating.</p>'+
-      '<div class="cert-row">'+
-        '<input type="text" id="cert-name" placeholder="F.I.Sh (masalan: Nilufar Karimova)">'+
-        '<input type="text" id="cert-org" placeholder="Tashkilot nomi (ixtiyoriy)">'+
-      '</div>'+
-      '<button class="btn btn-primary" id="cert-generate">Sertifikatni yaratish</button>'+
-      '<div class="cert-status" id="cert-status"></div>'+
-    '</div>'+
-    '<div class="certificate" id="certificate">'+
-      '<div class="kicker">Attestatsiyaga tayyorgarlik sertifikati</div>'+
-      '<h2>MaktabgachaHub</h2>'+
-      '<div class="cert-name" id="cert-out-name"></div>'+
-      '<div class="cert-org" id="cert-out-org"></div>'+
-      '<p class="cert-body">323-son buyruq asosida maktabgacha ta\'lim tashkiloti va pedagoglarning ish hujjatlarini yuritish bo\'yicha bilim testini muvaffaqiyatli topshirdi.</p>'+
-      '<div class="cert-score" id="cert-out-score"></div>'+
-      '<div class="cert-foot"><span id="cert-out-date"></span><span>maktabgachahub.website</span></div>'+
-    '</div>'+
-    '<div class="cert-actions" id="cert-actions" style="display:none;">'+
-      '<button class="btn btn-primary" id="cert-print">Sertifikatni chop etish / PDF</button>'+
-    '</div>'+
-    '<div class="nav-buttons"><button class="btn btn-ghost" data-prev="s-final">&larr; Oldingi bo\'lim</button><span></span></div>';
-  panelsEl.appendChild(fp);
-}
-
-function renderNav(i){
-  const prev = i>0 ? SECTIONS[i-1].id : null;
-  const next = i<SECTIONS.length-1 ? SECTIONS[i+1].id : 'final';
-  let html = '<div class="nav-buttons">';
-  html += prev ? '<button class="btn btn-ghost" data-prev="s-'+prev+'">&larr; Oldingi bo\'lim</button>' : '<span></span>';
-  html += '<button class="btn btn-ghost" data-next="s-'+next+'">Keyingi bo\'lim &rarr;</button>';
-  html += '</div>';
-  return html;
-}
-
-function selectPanel(id){
-  document.querySelectorAll('.panel').forEach(p=>p.classList.toggle('active', p.id===id));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.target===id));
-  window.scrollTo({top:0, behavior:'instant' in window ? 'instant' : 'auto'});
-}
-
-function gradeQuiz(qid, questions){
-  const container = document.getElementById('quiz-'+qid);
-  let allAnswered = true;
-  let firstUnanswered = null;
-  questions.forEach((q,qi)=>{
-    const block = container.querySelector('.q-block[data-qi="'+qi+'"]');
-    const checked = block.querySelector('input[type=radio]:checked');
-    const errEl = block.querySelector('.q-err');
-    if(!checked){
-      allAnswered = false;
-      errEl.style.display='block';
-      if(firstUnanswered===null) firstUnanswered = block;
-    } else {
-      errEl.style.display='none';
-    }
-  });
-  if(!allAnswered){
-    firstUnanswered.scrollIntoView({behavior:'smooth', block:'center'});
-    return null;
-  }
-  let correct = 0;
-  questions.forEach((q,qi)=>{
-    const block = container.querySelector('.q-block[data-qi="'+qi+'"]');
-    const checked = block.querySelector('input[type=radio]:checked');
-    const chosen = parseInt(checked.value,10);
-    const opts = block.querySelectorAll('.opt');
-    opts.forEach((o,oi)=>{
-      o.classList.remove('correct','incorrect');
-      if(oi === q.ans) o.classList.add('correct');
-      else if(oi === chosen && chosen !== q.ans) o.classList.add('incorrect');
-      const input = o.querySelector('input');
-      input.disabled = true;
-    });
-    const exp = block.querySelector('.q-exp');
-    if(q.exp){ exp.textContent = q.exp; exp.classList.add('show'); }
-    if(chosen === q.ans) correct++;
-  });
-  return correct;
-}
-
-function updateProgress(){
-  const total = SECTIONS.length;
-  const done = Object.keys(progress).filter(k=>k!=='final' && progress[k]!==undefined).length;
-  const pct = Math.round((done/total)*100);
-  document.getElementById('progressFill').style.width = pct+'%';
-  document.getElementById('progressPct').textContent = pct+'%';
-  SECTIONS.forEach(s=>{
-    const tab = document.querySelector('.tab[data-target="s-'+s.id+'"]');
-    if(tab) tab.classList.toggle('done', progress[s.id]!==undefined);
-  });
-  const ftab = document.querySelector('.tab[data-target="s-final"]');
-  if(ftab) ftab.classList.toggle('done', progress['final']!==undefined);
-  saveProgress();
-}
-
 async function saveProgress(){
-  try{
-    if(window.storage){
-      await window.storage.set('progress-323buyruq', JSON.stringify(progress));
-    }
-  }catch(e){}
+  if(!state.userCode) return;
+  await sb.from('hujjat_progress').upsert({code:state.userCode, checked:state.checked, updated_at:new Date().toISOString()},{onConflict:'code'});
 }
 
-async function loadProgress(){
-  try{
-    if(window.storage){
-      const r = await window.storage.get('progress-323buyruq');
-      if(r && r.value){
-        Object.assign(progress, JSON.parse(r.value));
-      }
-    }
-  }catch(e){}
-  updateProgress();
-  applySavedResults();
+function totalDocs(){ return bloks.reduce((s,b)=>s+b.count,0); }
+function checkedCount(){ return Object.values(state.checked).filter(Boolean).length; }
+function overallPct(){ const t=totalDocs()||1; return Math.round((checkedCount()/t)*100); }
+function blokCheckedCount(b){ return b.documents.filter(d=>state.checked[d.code]).length; }
+
+
+const CERT_COURSE_TITLE = '323-son Buyruq — Hujjatlar nazorati';
+
+function renderCertBanner(pct, totalDone, total){
+  if(pct < 100) return "";
+  return `
+    <div class="cert-banner">
+      <div class="icon">📋</div>
+      <div class="txt"><b>Tabriklaymiz! Barcha mavzular tugallandi.</b><span>Endi shaxsiy sertifikatingizni olishingiz mumkin.</span></div>
+      <button id="openCertBtn">🏆 Sertifikatni ko'rish</button>
+    </div>`;
 }
 
-function applySavedResults(){
-  Object.keys(progress).forEach(qid=>{
-    const scoreEl = document.getElementById('score-'+qid);
-    if(!scoreEl) return;
-    const questions = qid==='final' ? FINAL_EXAM.questions : (SECTIONS.find(s=>s.id===qid)||{}).quiz;
-    if(!questions) return;
-    const container = document.getElementById('quiz-'+qid);
-    const retryBtn = container.querySelector('[data-retry]');
-    scoreEl.style.display='inline-block';
-    scoreEl.textContent = 'Natija: '+progress[qid]+' / '+questions.length;
-    if(retryBtn) retryBtn.style.display='inline-block';
-    const checkBtn = container.querySelector('[data-check]');
-    if(checkBtn) checkBtn.style.display='none';
-    if(qid==='final'){
-      showExamResult(progress[qid]);
-    }
-  });
+function renderCertificate(){
+  const today = new Date();
+  const dateStr = today.toLocaleDateString('uz-UZ', { day:'2-digit', month:'long', year:'numeric' });
+  return `
+  <div class="cert-page">
+    <div style="display:flex; flex-direction:column; align-items:center; width:100%;">
+      <div class="cert-sheet" id="certSheet">
+        <div class="cert-kicker">Manba · Sertifikat</div>
+        <h1 class="cert-title">Muvaffaqiyat sertifikati</h1>
+        <div class="cert-sub">CERTIFICATE OF COMPLETION</div>
+        <div class="cert-body">
+          <div class="lbl">Ushbu sertifikat quyidagi shaxsga topshiriladi</div>
+          <div class="cert-name">${state.userName || ''}</div>
+          <div class="cert-mtt-line" id="certMttLine">${state.mttName ? ('Muassasa: <b>'+escapeHtmlCert(state.mttName)+'</b>') : ''}</div>
+          <div class="cert-desc"><b>"${CERT_COURSE_TITLE}"</b> kursidagi barcha mavzularni muvaffaqiyatli va to'liq tugatgani munosabati bilan ushbu sertifikat bilan taqdirlanadi.</div>
+          <div class="cert-footer">
+            <div class="cert-date">Sana: ${dateStr}</div>
+            <div class="cert-seal">📋</div>
+            <div class="cert-brand"><b>Manba</b>ta'lim platformasi</div>
+          </div>
+        </div>
+      </div>
+      <div class="cert-mtt-field">
+        <label for="certMttInput">Muassasa (MTT) nomi — ixtiyoriy, faqat sertifikatda ko'rinadi</label>
+        <input id="certMttInput" type="text" placeholder="Masalan: 25-son bog'cha" value="${state.mttName||''}">
+      </div>
+      <div class="cert-actions">
+        <button class="btn-back" id="certBackBtn">← Orqaga</button>
+        <button class="btn-print" id="certPrintBtn">🖨️ Chop etish / PDF saqlash</button>
+      </div>
+    </div>
+  </div>`;
 }
 
-function resetQuiz(qid, questions){
-  const container = document.getElementById('quiz-'+qid);
-  container.querySelectorAll('input[type=radio]').forEach(i=>{i.checked=false; i.disabled=false;});
-  container.querySelectorAll('.opt').forEach(o=>o.classList.remove('correct','incorrect'));
-  container.querySelectorAll('.q-exp').forEach(e=>{e.classList.remove('show'); e.textContent='';});
-  container.querySelectorAll('.q-err').forEach(e=>e.style.display='none');
-  const scoreEl = document.getElementById('score-'+qid);
-  scoreEl.style.display='none';
-  container.querySelector('[data-check]').style.display='inline-block';
-  container.querySelector('[data-retry]').style.display='none';
-  delete progress[qid];
-  if(qid==='final'){
-    document.getElementById('exam-result').style.display='none';
-    document.getElementById('cert-form').classList.remove('show');
-    document.getElementById('certificate').classList.remove('show');
-    document.getElementById('cert-actions').style.display='none';
-    document.getElementById('cert-status').classList.remove('show');
-    lastExamScore = null;
-  }
-  updateProgress();
+function escapeHtmlCert(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-
-let lastExamScore = null;
-
-function showExamResult(score){
-  const total = FINAL_EXAM.questions.length;
-  const wrap = document.getElementById('exam-result');
-  const big = document.getElementById('exam-score');
-  const verdict = document.getElementById('exam-verdict');
-  wrap.style.display='block';
-  big.textContent = score+'/'+total;
-  lastExamScore = score;
-  if(score >= 10){
-    verdict.textContent = "A'lo natija — attestatsiyaga to'liq tayyorsiz!";
-    verdict.style.color = 'var(--ok)';
-  } else if(score >= 7){
-    verdict.textContent = "Yaxshi natija — ba'zi bo'limlarni qayta ko'rib chiqing.";
-    verdict.style.color = 'var(--gold-dark)';
-  } else {
-    verdict.textContent = "Bo'limlarni qaytadan o'qib, testni qayta topshiring.";
-    verdict.style.color = 'var(--bad)';
-  }
-  const certForm = document.getElementById('cert-form');
-  if(score >= 7){
-    certForm.classList.add('show');
-  } else {
-    certForm.classList.remove('show');
-  }
-  wrap.scrollIntoView({behavior:'smooth', block:'center'});
-}
-
-const SUPABASE_URL = 'https://elubafxoxbllogjwfcna.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVsdWJhZnhveGJsbG9nandmY25hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODcyMzg0OTYsImV4cCI6MjEwMjgxNDQ5Nn0.9T-HlCcIdX1fsznQ9mDaTVS5ynzTp-iS14cQwKhWyBc';
-
-async function saveCertificateToSupabase(name, org, score, total){
-  try{
-    const res = await fetch(SUPABASE_URL+'/rest/v1/mtt_323_certificates', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization':'Bearer '+SUPABASE_ANON_KEY,
-        'Prefer':'return=minimal'
-      },
-      body: JSON.stringify({full_name:name, organization: org || null, score: score, total: total})
+function bindCertEvents(){
+  const openBtn = document.getElementById("openCertBtn");
+  if(openBtn) openBtn.addEventListener("click", ()=>{ state.view="certificate"; render(); });
+  const backBtn = document.getElementById("certBackBtn");
+  if(backBtn) backBtn.addEventListener("click", ()=>{ state.view="main"; render(); });
+  const printBtn = document.getElementById("certPrintBtn");
+  if(printBtn) printBtn.addEventListener("click", ()=> window.print());
+  const mttInput = document.getElementById("certMttInput");
+  if(mttInput){
+    mttInput.addEventListener("input", (e)=>{
+      state.mttName = e.target.value;
+      const line = document.getElementById("certMttLine");
+      if(line) line.innerHTML = state.mttName ? ("Muassasa: <b>"+escapeHtmlCert(state.mttName)+"</b>") : "";
     });
-    return res.ok;
-  }catch(e){
-    return false;
   }
 }
 
-function formatUzDate(d){
-  const months = ['yanvar','fevral','mart','aprel','may','iyun','iyul','avgust','sentabr','oktabr','noyabr','dekabr'];
-  return d.getDate()+'-'+months[d.getMonth()]+', '+d.getFullYear()+'-yil';
+function render(){
+  const app = document.getElementById("app");
+  if(state.view==="loading") app.innerHTML = loadingHTML();
+  else if(state.view==="login") app.innerHTML = renderLogin();
+  else if(state.view==="main") app.innerHTML = renderMain();
+  else if(state.view==="detail") app.innerHTML = renderDetail(state.currentId);
+  else if(state.view==="certificate") app.innerHTML = renderCertificate();
+  bindEvents();
+  window.scrollTo({top:0, behavior:"instant"});
 }
 
-async function generateCertificate(){
-  const nameInput = document.getElementById('cert-name');
-  const orgInput = document.getElementById('cert-org');
-  const status = document.getElementById('cert-status');
-  const name = nameInput.value.trim();
-  const org = orgInput.value.trim();
-  if(!name){
-    status.textContent = "Iltimos, avval F.I.Sh. ni kiriting.";
-    status.style.color = 'var(--bad)';
-    status.classList.add('show');
-    nameInput.focus();
-    return;
+function renderLogin(){
+  return `
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="ornament"></div>
+      <div class="login-body">
+        <div class="login-mark"><div class="dot">🚂</div><div><div class="word">Manba · 323</div><div class="sub">HUJJATLAR NAZORATI</div></div></div>
+        <h1>Xush kelibsiz</h1>
+        <p class="lead">Bu sahifa faqat "Manba" platformasidan kirish kodi olgan xodimlar uchun. Kodingizni kiriting.</p>
+        <div class="field"><label for="loginInput">Kirish kodi</label><input id="loginInput" type="text" placeholder="Masalan: AZIZA-1147" autocomplete="off" autocapitalize="characters"></div>
+        <div class="login-error" id="loginError">Kod topilmadi yoki faol emas.</div>
+        <button class="btn btn-primary" id="loginBtn">Kirish</button>
+        <div class="login-hint">Kirish kodingiz yo'qmi? Asosiy "Manba" platformasi administratoridan so'rang.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+async function doLogin(){
+  const val=(document.getElementById("loginInput").value||"").trim().toUpperCase();
+  const err=document.getElementById("loginError");
+  if(!val){ err.textContent="Iltimos, kodni kiriting."; err.classList.add("show"); return; }
+  const btn=document.getElementById("loginBtn");
+  if(btn){btn.disabled=true; btn.textContent="Tekshirilmoqda...";}
+  const found=userCodes.find(u=>u.code.toUpperCase()===val);
+  if(found && found.active){
+    state.view="main"; state.userName=found.name; state.userCode=found.code;
+    await loadProgress(found.code); render(); return;
   }
-  const total = FINAL_EXAM.questions.length;
-  const score = lastExamScore!==null ? lastExamScore : (progress['final']||0);
-  document.getElementById('cert-out-name').textContent = name;
-  document.getElementById('cert-out-org').textContent = org;
-  document.getElementById('cert-out-score').textContent = 'Natija: '+score+' / '+total+' ('+Math.round(score/total*100)+'%)';
-  document.getElementById('cert-out-date').textContent = formatUzDate(new Date());
-  document.getElementById('certificate').classList.add('show');
-  document.getElementById('cert-actions').style.display='flex';
-  document.getElementById('certificate').scrollIntoView({behavior:'smooth', block:'center'});
-  status.textContent = 'Saqlanmoqda...';
-  status.style.color = 'var(--ink-soft)';
-  status.classList.add('show');
-  const ok = await saveCertificateToSupabase(name, org, score, total);
-  status.textContent = ok ? "Sertifikat yaratildi va saqlandi." : "Sertifikat yaratildi (saqlashda muammo yuz berdi, lekin chop etishingiz mumkin).";
-  status.style.color = ok ? 'var(--ok)' : 'var(--gold-dark)';
+  if(btn){btn.disabled=false; btn.textContent="Kirish";}
+  err.textContent=(found && !found.active)?"Bu kod faol emas.":"Kod topilmadi. Qayta tekshirib ko'ring.";
+  err.classList.add("show");
 }
 
-function wireEvents(){
-  document.body.addEventListener('click', (e)=>{
-    const checkBtn = e.target.closest('[data-check]');
-    if(checkBtn){
-      const qid = checkBtn.dataset.check;
-      const questions = qid==='final' ? FINAL_EXAM.questions : SECTIONS.find(s=>s.id===qid).quiz;
-      const result = gradeQuiz(qid, questions);
-      if(result===null) return;
-      const scoreEl = document.getElementById('score-'+qid);
-      scoreEl.style.display='inline-block';
-      scoreEl.textContent = 'Natija: '+result+' / '+questions.length;
-      checkBtn.style.display='none';
-      const container = document.getElementById('quiz-'+qid);
-      container.querySelector('[data-retry]').style.display='inline-block';
-      progress[qid] = result;
-      updateProgress();
-      if(qid==='final') showExamResult(result);
-      return;
-    }
-    const retryBtn = e.target.closest('[data-retry]');
-    if(retryBtn){
-      const qid = retryBtn.dataset.retry;
-      const questions = qid==='final' ? FINAL_EXAM.questions : SECTIONS.find(s=>s.id===qid).quiz;
-      resetQuiz(qid, questions);
-      return;
-    }
-    const nextBtn = e.target.closest('[data-next]');
-    if(nextBtn){ selectPanel(nextBtn.dataset.next); return; }
-    const prevBtn = e.target.closest('[data-prev]');
-    if(prevBtn){ selectPanel(prevBtn.dataset.prev); return; }
-    const optLabel = e.target.closest('.opt');
-    if(optLabel && !optLabel.querySelector('input').disabled){
-      const block = optLabel.closest('.q-block');
-      block.querySelector('.q-err').style.display='none';
-    }
-  });
+function renderMain(){
+  const pct = overallPct();
+  return `
+  <header class="site">
+    <div class="site-header-inner">
+      <div class="brand"><div class="dot">🚂</div><div class="word">Manba<small>323 Ekspress</small></div></div>
+      <div class="header-right"><span class="who-pill">${state.userName}</span><button class="icon-btn" id="logoutBtn" title="Chiqish">⎋</button></div>
+    </div>
+  </header>
+  <main class="site-main">
+    <div class="hero">
+      <span class="kicker">323-son Buyruq — DMTT 1-ilova, 29.08.2025</span>
+      <h1>${TITLE}</h1>
+      <p>${SUBTITLE} Har bir vagon — bitta lavozim. Hujjatingizni tayyorlab, ro'yxatda belgilang — qancha qolgani darhol ko'rinadi.</p>
+      <div class="hero-progress"><div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div><div class="pct">${checkedCount()}/${totalDocs()} hujjat tayyor</div></div>
 
-  document.getElementById('cert-generate').addEventListener('click', generateCertificate);
-  document.getElementById('cert-print').addEventListener('click', ()=>window.print());
+    ${renderCertBanner(pct)}
+    </div>
 
-  document.getElementById('resetBtn').addEventListener('click', async ()=>{
-    for(const key of Object.keys(progress)){
-      const qid = key;
-      const questions = qid==='final' ? FINAL_EXAM.questions : (SECTIONS.find(s=>s.id===qid)||{}).quiz;
-      if(questions) resetQuiz(qid, questions);
-    }
-    try{ if(window.storage){ await window.storage.delete('progress-323buyruq'); } }catch(e){}
-  });
+    <div class="formula-card">
+      <div><div class="label">Oltin formula</div><div class="nums">7-1-1-1-4-3-2-2-4-1</div></div>
+      <div class="note">= jami 26 ta hujjat, 10 ta lavozim bo'yicha</div>
+    </div>
+
+    <div class="intro-note">🚂 <b>Qanday ishlatish kerak:</b> O'zingizning lavozimingizga mos vagonni toping va uni oching. Har bir hujjat tayyor bo'lganda uni belgilang — progress avtomatik saqlanadi va keyingi safar kirganingizda ham saqlanib qoladi.</div>
+
+    <div class="section-title"><h2>Vagonlar</h2><span class="count">10 ta lavozim</span></div>
+    <div class="vagon-list">
+      ${bloks.filter(b=>b.count>0).map(b => {
+        const done = blokCheckedCount(b);
+        const isDone = done===b.count;
+        return `
+        <div class="vagon-card ${isDone?"done":""}" data-open="${b.id}">
+          <div class="num">${isDone?"✓":b.icon}</div>
+          <div class="body">
+            <span class="kicker">${b.subtitle} · ${b.count} ta hujjat</span>
+            <h3>${b.title}</h3>
+            <div class="progress-mini">${done}/${b.count} tayyor</div>
+          </div>
+          <div class="arrow">→</div>
+        </div>`;
+      }).join("")}
+    </div>
+  </main>`;
 }
 
-buildTabs();
-buildPanels();
-wireEvents();
-selectPanel('s-umumiy');
-loadProgress();
+function renderDetail(id){
+  const b = bloks.find(x=>x.id===id);
+  if(!b){ state.view="main"; return renderMain(); }
+  const done = blokCheckedCount(b);
+  const pct = b.count ? Math.round((done/b.count)*100) : 0;
+  return `
+  <header class="site">
+    <div class="site-header-inner">
+      <div class="brand"><div class="dot">🚂</div><div class="word">Manba<small>323 Ekspress</small></div></div>
+      <div class="header-right"><span class="who-pill">${state.userName}</span><button class="icon-btn" id="logoutBtn" title="Chiqish">⎋</button></div>
+    </div>
+  </header>
+  <main class="site-main">
+    <div class="reader-top"><button class="back-btn" id="backBtn">← Vagonlarga qaytish</button></div>
+    <div class="reader-head">
+      <div class="icon-badge">${b.icon}</div>
+      <div><span class="kicker">${b.subtitle}</span><h1>${b.title}</h1></div>
+    </div>
+
+    <div class="hikoya-box"><b>Nega shunday?</b>${b.hikoya}</div>
+
+    <div class="doc-progress"><div class="bar"><div class="bar-fill" style="width:${pct}%"></div></div><div class="lbl">${done}/${b.count} tayyor</div></div>
+
+    <div class="doc-list">
+      ${b.documents.map(d => {
+        const isChecked = !!state.checked[d.code];
+        return `
+        <div class="doc-item ${isChecked?"checked":""}" data-toggle-doc="${d.code}">
+          <div class="doc-checkbox">${isChecked?"✓":""}</div>
+          <div class="doc-body">
+            <div class="doc-code">${d.code}</div>
+            <div class="doc-name">${d.name}</div>
+            <div class="doc-purpose"><b>Nima uchun kerak:</b> ${d.purpose}</div>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+
+    <div class="complete-banner ${done===b.count?"show":""}">✓ Ushbu lavozim bo'yicha barcha hujjatlar tayyor deb belgilandi!</div>
+  </main>`;
+}
+
+function toggleDoc(code){
+  state.checked[code] = !state.checked[code];
+  render(); saveProgress();
+}
+
+function bindEvents(){
+  bindCertEvents();
+  const app = document.getElementById("app");
+  const loginBtn = document.getElementById("loginBtn");
+  if(loginBtn){ loginBtn.addEventListener("click", doLogin); document.getElementById("loginInput").addEventListener("keydown", e=>{if(e.key==="Enter") doLogin();}); }
+  const logoutBtn = document.getElementById("logoutBtn");
+  if(logoutBtn) logoutBtn.addEventListener("click", ()=>{ state={view:"login",userName:null,userCode:null,checked:{}}; render(); });
+  app.querySelectorAll("[data-open]").forEach(el=>el.addEventListener("click", ()=>{ state.view="detail"; state.currentId=el.dataset.open; render(); }));
+  const backBtn = document.getElementById("backBtn");
+  if(backBtn) backBtn.addEventListener("click", ()=>{ state.view="main"; render(); });
+  app.querySelectorAll("[data-toggle-doc]").forEach(el=>el.addEventListener("click", ()=> toggleDoc(el.dataset.toggleDoc)));
+}
+
+async function init(){
+  render();
+  try{
+    const ok = await loadAllData();
+    if(!ok){ document.getElementById("app").innerHTML = `<div class="loading-wrap"><p>Ma'lumotlarni yuklab bo'lmadi. Internetni tekshiring va sahifani yangilang.</p></div>`; return; }
+  } catch(e){ console.error(e); document.getElementById("app").innerHTML = `<div class="loading-wrap"><p>Ulanishda xatolik yuz berdi.</p></div>`; return; }
+  state.view="login"; render();
+}
+init();
 </script>
 </body>
 </html>
