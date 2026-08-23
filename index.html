@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="uz" class="locked">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -286,17 +286,75 @@
     .hero{grid-template-columns:1fr;}
     .layout{grid-template-columns:1fr;}
     .tabs{
-      position:static;flex-direction:column;max-height:none;
-      padding-bottom:0;gap:6px;width:100%;
+      position:static;display:grid;grid-template-columns:1fr 1fr;max-height:none;
+      gap:10px;padding:2px;
     }
-    .tab-group-label{margin:16px 0 6px 4px;}
-    .tab{width:100%;padding:12px 14px;}
+    .tab-group-label{grid-column:1/-1;margin:18px 2px 0;}
+    .tab-group-label:first-child{margin-top:2px;}
+    .tab{flex-direction:column;align-items:flex-start;text-align:left;gap:10px;padding:14px;}
     .tab .name{white-space:normal;}
+    .tab .check{position:absolute;top:10px;right:10px;}
+    .tab{position:relative;}
+  }
+  @media (max-width:480px){
+    .tabs{grid-template-columns:1fr;}
   }
   .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+
+  /* ---------- ACCESS GATE ---------- */
+  html.locked body{overflow:hidden;}
+  html:not(.locked) #lockScreen{display:none;}
+  html.locked .app{display:none;}
+  #lockScreen{
+    position:fixed;inset:0;z-index:999;
+    background:radial-gradient(circle at 20% 15%,#173a6e 0%,var(--navy) 55%,#0a1c3a 100%);
+    display:flex;align-items:center;justify-content:center;padding:20px;
+  }
+  .lock-card{
+    width:100%;max-width:380px;background:var(--paper);border-radius:20px;
+    padding:34px 30px 28px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.35);
+  }
+  .lock-icon{
+    width:56px;height:56px;border-radius:16px;background:var(--blue-tint);color:var(--blue-dark);
+    display:flex;align-items:center;justify-content:center;margin:0 auto 16px;
+  }
+  .lock-icon svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+  .lock-card h2{font-size:19px;margin-bottom:6px;}
+  .lock-card p{font-size:13.5px;color:var(--ink-soft);margin-bottom:20px;}
+  .lock-input{
+    width:100%;font-family:'Manrope';font-size:15px;letter-spacing:.03em;text-align:center;
+    padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;margin-bottom:12px;color:var(--ink);
+  }
+  .lock-input:focus{outline:none;border-color:var(--blue);}
+  .lock-input.shake{animation:shake .35s;border-color:var(--bad);}
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-6px);}
+    40%{transform:translateX(6px);}
+    60%{transform:translateX(-4px);}
+    80%{transform:translateX(4px);}
+  }
+  .lock-error{font-size:12.5px;color:var(--bad);margin:-4px 0 14px;min-height:16px;}
+  .lock-btn{
+    width:100%;font-family:'Manrope';font-weight:700;font-size:14.5px;color:#fff;
+    background:var(--blue);border:none;border-radius:12px;padding:12px;cursor:pointer;
+  }
+  .lock-btn:hover{background:var(--blue-dark);}
+  .lock-foot{font-size:11.5px;color:var(--ink-faint);margin-top:16px;}
 </style>
 </head>
 <body>
+<div id="lockScreen">
+  <div class="lock-card">
+    <div class="lock-icon"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></div>
+    <h2>Kirish kodi talab qilinadi</h2>
+    <p>323-son buyruq qo'llanmasiga faqat maxsus kod bilan kirish mumkin.</p>
+    <input type="password" id="lockInput" class="lock-input" placeholder="Kirish kodini kiriting" autocomplete="off">
+    <div class="lock-error" id="lockError"></div>
+    <button class="lock-btn" id="lockBtn" type="button">Kirish</button>
+    <div class="lock-foot">Kodni bilmasangiz, tashkilot rahbariyatiga murojaat qiling.</div>
+  </div>
+</div>
 <div class="app">
 
   <div class="hero">
@@ -335,6 +393,40 @@
 </div>
 
 <script>
+const ACCESS_CODE = 'Toifa323';
+const ACCESS_KEY = 'toifa323-access-granted';
+
+function tryUnlock(){
+  const input = document.getElementById('lockInput');
+  const err = document.getElementById('lockError');
+  const val = input.value.trim();
+  if(val === ACCESS_CODE){
+    document.documentElement.classList.remove('locked');
+    try{ localStorage.setItem(ACCESS_KEY, '1'); }catch(e){}
+    err.textContent = '';
+  } else {
+    err.textContent = "Kod noto'g'ri. Qaytadan urinib ko'ring.";
+    input.classList.remove('shake');
+    void input.offsetWidth;
+    input.classList.add('shake');
+    input.value = '';
+    input.focus();
+  }
+}
+
+(function initLock(){
+  let granted = false;
+  try{ granted = localStorage.getItem(ACCESS_KEY) === '1'; }catch(e){}
+  if(granted) document.documentElement.classList.remove('locked');
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const btn = document.getElementById('lockBtn');
+    const input = document.getElementById('lockInput');
+    btn.addEventListener('click', tryUnlock);
+    input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryUnlock(); });
+    if(!granted) input.focus();
+  });
+})();
+
 const SECTIONS = [
 {
   id:"umumiy", code:"i", group:"Kirish",
@@ -607,6 +699,21 @@ const tabsEl = document.getElementById('tabs');
 const panelsEl = document.getElementById('panels');
 const progress = {};
 
+const ICONS = {
+  i:'<path d="M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4"/><path d="M9 13h6M9 16h6"/>',
+  '01':'<path d="M3 6a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6z"/>',
+  '02':'<circle cx="9" cy="8" r="3"/><path d="M4 20c0-3 2.5-5 5-5s5 2 5 5"/><circle cx="17" cy="9" r="2.2"/><path d="M15.2 20c0-2.1 1-3.7 2.8-4.3"/>',
+  '03':'<rect x="3" y="8" width="18" height="11" rx="2"/><path d="M8 8V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/>',
+  '04':'<rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="m9 13 2 2 4-4"/>',
+  '05':'<path d="M12 6c-1.5-1.2-4-2-7-2v13c3 0 5.5.8 7 2 1.5-1.2 4-2 7-2V4c-3 0-5.5.8-7 2z"/><path d="M12 6v13"/>',
+  '06':'<path d="M12 20s-7-4.6-9.3-9C1.3 8 2.4 5 5.4 4.4 7.4 4 9.4 5 12 7.5 14.6 5 16.6 4 18.6 4.4c3 .6 4.1 3.6 2.7 6.6C19 15.4 12 20 12 20z"/>',
+  '07':'<circle cx="6.5" cy="18" r="2.3"/><circle cx="17" cy="16" r="2.3"/><path d="M8.8 18V5.5L19.3 3v13"/>',
+  '08':'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.3"/><circle cx="12" cy="12" r=".9" fill="currentColor" stroke="none"/>',
+  '09':'<path d="M4 5h16a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><circle cx="8" cy="10.5" r=".9" fill="currentColor" stroke="none"/><circle cx="12" cy="10.5" r=".9" fill="currentColor" stroke="none"/><circle cx="16" cy="10.5" r=".9" fill="currentColor" stroke="none"/>',
+  '10':'<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.4 2.5 3.7 6 3.7 9s-1.3 6.5-3.7 9c-2.4-2.5-3.7-6-3.7-9S9.6 5.5 12 3z"/>',
+  final:'<path d="M12 2.5l2.9 6 6.6.8-4.8 4.6 1.2 6.6L12 17.2 6.1 20.5l1.2-6.6-4.8-4.6 6.6-.8L12 2.5z"/>'
+};
+
 function buildTabs(){
   let lastGroup = null;
   SECTIONS.forEach((s,i)=>{
@@ -621,7 +728,13 @@ function buildTabs(){
     b.className='tab';
     b.type='button';
     b.dataset.target = 's-'+s.id;
-    b.innerHTML = '<span class="idx">'+s.code+'</span><span class="name">'+s.title+'</span><i class="check">&#10003;</i>';
+    b.innerHTML =
+      '<span class="tab-icon"><svg viewBox="0 0 24 24">'+(ICONS[s.code]||'')+'</svg></span>'+
+      '<span class="tab-content">'+
+        '<span class="tab-top"><span class="idx">'+(s.code==='i'?'KIRISH':s.code)+'</span><span class="name">'+s.title+'</span></span>'+
+        '<span class="role-caption">'+s.role+'</span>'+
+      '</span>'+
+      '<i class="check">&#10003;</i>';
     b.addEventListener('click',()=>selectPanel('s-'+s.id));
     tabsEl.appendChild(b);
   });
@@ -633,6 +746,13 @@ function buildTabs(){
   fb.className='tab final';
   fb.type='button';
   fb.dataset.target='s-final';
+  fb.innerHTML =
+    '<span class="tab-icon"><svg viewBox="0 0 24 24">'+ICONS.final+'</svg></span>'+
+    '<span class="tab-content">'+
+      '<span class="tab-top"><span class="idx">TEST</span><span class="name">Yakuniy sinov</span></span>'+
+      '<span class="role-caption">Sertifikat olish</span>'+
+    '</span>'+
+    '<i class="check">&#10003;</i>';
   fb.innerHTML = '<span class="idx">&#9733;</span><span class="name">Yakuniy sinov</span><i class="check">&#10003;</i>';
   fb.addEventListener('click',()=>selectPanel('s-final'));
   tabsEl.appendChild(fb);
